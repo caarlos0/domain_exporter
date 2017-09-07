@@ -21,20 +21,14 @@ var (
 
 	re = regexp.MustCompile(`(?i)(Registry Expiry Date|paid-till|Expiration Date|Expiry.*|expires.*): (.*)`)
 
-	expiryGauge = prometheus.NewGaugeVec(
-		prometheus.GaugeOpts{
-			Name: "domain_expiry_days",
-			Help: "time in days until the domain expires",
-		},
-		[]string{"domain"},
-	)
-	probeDurationGauge = prometheus.NewGaugeVec(
-		prometheus.GaugeOpts{
-			Name: "probe_duration_seconds",
-			Help: "Returns how long the probe took to complete in seconds",
-		},
-		[]string{"domain"},
-	)
+	expiryGauge = prometheus.NewGauge(prometheus.GaugeOpts{
+		Name: "domain_expiry_days",
+		Help: "time in days until the domain expires",
+	})
+	probeDurationGauge = prometheus.NewGauge(prometheus.GaugeOpts{
+		Name: "probe_duration_seconds",
+		Help: "Returns how long the probe took to complete in seconds",
+	})
 
 	formats = []string{
 		time.ANSIC,
@@ -111,8 +105,8 @@ func probeHandler(w http.ResponseWriter, r *http.Request) {
 	for _, format := range formats {
 		if date, err := time.Parse(format, dateStr); err == nil {
 			var days = math.Floor(date.Sub(time.Now()).Hours() / 24)
-			expiryGauge.WithLabelValues(target).Set(days)
-			probeDurationGauge.WithLabelValues(target).Set(time.Since(start).Seconds())
+			expiryGauge.Set(days)
+			probeDurationGauge.Set(time.Since(start).Seconds())
 			log.Printf("domain: %s, days: %v, date: %s\n", target, days, date)
 			promhttp.HandlerFor(registry, promhttp.HandlerOpts{}).ServeHTTP(w, r)
 			return

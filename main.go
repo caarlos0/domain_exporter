@@ -2,7 +2,6 @@ package main
 
 import (
 	"fmt"
-	"log"
 	"math"
 	"net/http"
 	"regexp"
@@ -13,6 +12,7 @@ import (
 	"github.com/domainr/whois"
 	"github.com/prometheus/client_golang/prometheus"
 	"github.com/prometheus/client_golang/prometheus/promhttp"
+	"github.com/prometheus/common/log"
 )
 
 var (
@@ -50,7 +50,7 @@ func main() {
 	kingpin.HelpFlag.Short('h')
 	kingpin.Parse()
 
-	log.Println("starting domain_exporter", version)
+	log.Info("starting domain_exporter", version)
 
 	http.Handle("/metrics", promhttp.Handler())
 	http.HandleFunc("/probe", probeHandler)
@@ -65,7 +65,7 @@ func main() {
 			</html>
 		`))
 	})
-	log.Println("listening on", *bind)
+	log.Info("listening on", *bind)
 	if err := http.ListenAndServe(*bind, nil); err != nil {
 		log.Fatalf("error starting server: %s", err)
 	}
@@ -76,6 +76,7 @@ func probeHandler(w http.ResponseWriter, r *http.Request) {
 	var target = params.Get("target")
 	var registry = prometheus.NewRegistry()
 	var start = time.Now()
+	var log = log.With("domain", target)
 	registry.MustRegister(expiryGauge)
 	registry.MustRegister(probeDurationGauge)
 	if target == "" {
@@ -105,9 +106,9 @@ func probeHandler(w http.ResponseWriter, r *http.Request) {
 	for _, format := range formats {
 		if date, err := time.Parse(format, dateStr); err == nil {
 			var days = math.Floor(date.Sub(time.Now()).Hours() / 24)
+			log.With("days", days).With("date", date).Info("got info")
 			expiryGauge.Set(days)
 			probeDurationGauge.Set(time.Since(start).Seconds())
-			log.Printf("domain: %s, days: %v, date: %s\n", target, days, date)
 			promhttp.HandlerFor(registry, promhttp.HandlerOpts{}).ServeHTTP(w, r)
 			return
 		}

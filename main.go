@@ -61,6 +61,7 @@ func main() {
 			<body>
 				<h1>Domain Exporter</h1>
 				<p><a href="/metrics">Metrics</a></p>
+				<p><a href="/probe?target=google.com">probe google.com</a></p>
 			</body>
 			</html>
 		`))

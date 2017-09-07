@@ -84,7 +84,7 @@ func probeHandler(w http.ResponseWriter, r *http.Request) {
 	}
 	req, err := whois.NewRequest(target)
 	if err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
+		http.Error(w, err.Error(), http.StatusBadRequest)
 		return
 	}
 	resp, err := whois.DefaultClient.Fetch(req)

@@ -5,6 +5,7 @@ import (
 	"io/ioutil"
 	"net/http"
 	"net/http/httptest"
+	"os"
 	"regexp"
 	"strconv"
 	"testing"
@@ -17,7 +18,7 @@ var srv *httptest.Server
 func TestMain(m *testing.M) {
 	srv = httptest.NewServer(http.HandlerFunc(probeHandler))
 	defer srv.Close()
-	m.Run()
+	os.Exit(m.Run())
 }
 
 func TestSuccessQueries(t *testing.T) {

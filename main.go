@@ -55,7 +55,8 @@ func main() {
 	http.Handle("/metrics", promhttp.Handler())
 	http.HandleFunc("/probe", probeHandler)
 	http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
-		w.Write([]byte(`
+		fmt.Fprintf(
+			w, `
 			<html>
 			<head><title>Domain Exporter</title></head>
 			<body>
@@ -64,7 +65,8 @@ func main() {
 				<p><a href="/probe?target=google.com">probe google.com</a></p>
 			</body>
 			</html>
-		`))
+			`,
+		)
 	})
 	log.Info("listening on", *bind)
 	if err := http.ListenAndServe(*bind, nil); err != nil {
@@ -106,7 +108,7 @@ func probeHandler(w http.ResponseWriter, r *http.Request) {
 	var dateStr = strings.TrimSpace(result[2])
 	for _, format := range formats {
 		if date, err := time.Parse(format, dateStr); err == nil {
-			var days = math.Floor(date.Sub(time.Now()).Hours() / 24)
+			var days = math.Floor(time.Until(date).Hours() / 24)
 			log.With("days", days).With("date", date).Info("got info")
 			expiryGauge.Set(days)
 			probeDurationGauge.Set(time.Since(start).Seconds())

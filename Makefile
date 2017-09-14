@@ -37,12 +37,4 @@ lint:
 
 ci: lint test
 
-docker-build:
-	docker build -t caarlos0/domain_exporter .
-
-docker-push:
-	docker push caarlos0/domain_exporter
-
-docker: docker-build docker-push
-
 .DEFAULT_GOAL := build

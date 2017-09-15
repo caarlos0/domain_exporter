@@ -12,3 +12,4 @@ archive:
   name_template: '{{ .Binary }}_{{ .Os }}_{{ .Arch }}'
 dockers:
   - image: caarlos0/domain_exporter
+    latest: true

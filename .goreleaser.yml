@@ -1,6 +1,8 @@
 build:
   goarch:
     - amd64
+  env:
+    - CGO_ENABLED=0
 brew:
   github:
     owner: caarlos0

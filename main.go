@@ -21,15 +21,6 @@ var (
 
 	re = regexp.MustCompile(`(?i)(Registry Expiry Date|paid-till|Expiration Date|Expiry.*|expires.*): (.*)`)
 
-	expiryGauge = prometheus.NewGauge(prometheus.GaugeOpts{
-		Name: "domain_expiry_days",
-		Help: "time in days until the domain expires",
-	})
-	probeDurationGauge = prometheus.NewGauge(prometheus.GaugeOpts{
-		Name: "probe_duration_seconds",
-		Help: "Returns how long the probe took to complete in seconds",
-	})
-
 	formats = []string{
 		time.ANSIC,
 		time.UnixDate,
@@ -80,6 +71,14 @@ func probeHandler(w http.ResponseWriter, r *http.Request) {
 	var registry = prometheus.NewRegistry()
 	var start = time.Now()
 	var log = log.With("domain", target)
+	var expiryGauge = prometheus.NewGauge(prometheus.GaugeOpts{
+		Name: "domain_expiry_days",
+		Help: "time in days until the domain expires",
+	})
+	var probeDurationGauge = prometheus.NewGauge(prometheus.GaugeOpts{
+		Name: "probe_duration_seconds",
+		Help: "Returns how long the probe took to complete in seconds",
+	})
 	registry.MustRegister(expiryGauge)
 	registry.MustRegister(probeDurationGauge)
 	if target == "" {

@@ -16,7 +16,7 @@ import (
 )
 
 var (
-	bind    = kingpin.Flag("bind", "addr to bind the server").Default(":9222").String()
+	bind    = kingpin.Flag("bind", "addr to bind the server").Short('b').Default(":9222").String()
 	version = "master"
 
 	re = regexp.MustCompile(`(?i)(Registry Expiry Date|paid-till|Expiration Date|Expiry.*|expires.*): (.*)`)

@@ -17,6 +17,7 @@ import (
 
 var (
 	bind    = kingpin.Flag("bind", "addr to bind the server").Short('b').Default(":9222").String()
+	debug   = kingpin.Flag("debug", "show debug logs").Default("false").Bool()
 	version = "master"
 
 	re = regexp.MustCompile(`(?i)(Registry Expiry Date|paid-till|Expiration Date|Expiry.*|expires.*): (.*)`)
@@ -40,6 +41,11 @@ func main() {
 	kingpin.Version("domain_exporter version " + version)
 	kingpin.HelpFlag.Short('h')
 	kingpin.Parse()
+
+	if *debug {
+		_ = log.Base().SetLevel("debug")
+		log.Debug("enabled debug mode")
+	}
 
 	log.Info("starting domain_exporter", version)
 
@@ -108,7 +114,7 @@ func probeHandler(w http.ResponseWriter, r *http.Request) {
 	for _, format := range formats {
 		if date, err := time.Parse(format, dateStr); err == nil {
 			var days = math.Floor(time.Until(date).Hours() / 24)
-			log.With("days", days).With("date", date).Info("got info")
+			log.With("days", days).With("date", date).Debug("got info")
 			expiryGauge.Set(days)
 			probeDurationGauge.Set(time.Since(start).Seconds())
 			promhttp.HandlerFor(registry, promhttp.HandlerOpts{}).ServeHTTP(w, r)

@@ -1,6 +1,7 @@
 build:
   goarch:
     - amd64
+    - arm
   env:
     - CGO_ENABLED=0
 brew:

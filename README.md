@@ -39,7 +39,9 @@ On the prometheus settings, add the domain_expoter prober:
 It works more or less like prometheus's
 [blackbox_exporter](https://github.com/prometheus/blackbox_exporter).
 
-Alerting rules examples can be found on the [_examples]() folder.
+Alerting rules examples can be found on the
+[_examples](https://github.com/caarlos0/domain_exporter/tree/master/_examples)
+folder.
 
 ## Building locally
 

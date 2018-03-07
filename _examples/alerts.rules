@@ -1,0 +1,21 @@
+ALERT DomainExpiring
+  IF domain_expiry_days < 30
+  FOR 1h
+  LABELS {
+    severity = "warning",
+  }
+  ANNOTATIONS {
+    description = "Domain {{ $labels.domain }} will expire in less than 30 days",
+    summary = "{{ $labels.domain }}: domain is expiring",
+  }
+
+ALERT DomainExpiring
+  IF domain_expiry_days < 5
+  FOR 1h
+  LABELS {
+    severity = "page",
+  }
+  ANNOTATIONS {
+    description = "Domain {{ $labels.domain }} will expire in less than 5 days",
+    summary = "{{ $labels.domain }}: domain is expiring",
+  }

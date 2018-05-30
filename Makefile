@@ -1,4 +1,4 @@
-SOURCE_FILES?=$$(go list ./... | grep -v /vendor/)
+SOURCE_FILES?=./...
 TEST_PATTERN?=.
 TEST_OPTIONS?=
 OS=$(shell uname -s)
@@ -7,7 +7,6 @@ export PATH := ./bin:$(PATH)
 
 # Install all the build and lint dependencies
 setup:
-	go get -u golang.org/x/tools/cmd/cover
 	curl -sfL https://install.goreleaser.com/github.com/golangci/golangci-lint.sh | sh
 ifeq ($(OS), Darwin)
 	brew install dep
@@ -18,7 +17,7 @@ endif
 .PHONY: setup
 
 test:
-	go test $(TEST_OPTIONS) -failfast -race -coverpkg=./... -covermode=atomic -coverprofile=coverage.txt $(SOURCE_FILES) -run $(TEST_PATTERN) -timeout=2m
+	go test $(TEST_OPTIONS) -v -failfast -race -coverpkg=./... -covermode=atomic -coverprofile=coverage.out $(SOURCE_FILES) -run $(TEST_PATTERN) -timeout=2m
 
 cover: test
 	go tool cover -html=coverage.out

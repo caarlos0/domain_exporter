@@ -20,7 +20,7 @@ var (
 	debug   = kingpin.Flag("debug", "show debug logs").Default("false").Bool()
 	version = "master"
 
-	re = regexp.MustCompile(`(?i)(Registry Expiry Date|paid-till|Expiration Date|Expiry.*|expires.*): (.*)`)
+	re = regexp.MustCompile(`(?i)(Registry Expiry Date|paid-till|Expiration Date|Expiry.*|expires.*|Expires): (.*)`)
 
 	formats = []string{
 		time.ANSIC,
@@ -76,7 +76,6 @@ func probeHandler(w http.ResponseWriter, r *http.Request) {
 	var target = params.Get("target")
 	var registry = prometheus.NewRegistry()
 	var start = time.Now()
-	var log = log.With("domain", target)
 	var expiryGauge = prometheus.NewGauge(prometheus.GaugeOpts{
 		Name: "domain_expiry_days",
 		Help: "time in days until the domain expires",
@@ -101,29 +100,27 @@ func probeHandler(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
-	var result = re.FindStringSubmatch(resp.String())
-	if len(result) < 2 {
-		http.Error(
-			w,
-			fmt.Sprintf("couldnt parse whois for domain: %s", target),
-			http.StatusInternalServerError,
-		)
+	days, err := extractDays(string(resp.Body))
+	if err != nil {
+		http.Error(w, fmt.Sprintf("%s: %s", target, err.Error()), http.StatusInternalServerError)
 		return
+	}
+	expiryGauge.Set(days)
+	probeDurationGauge.Set(time.Since(start).Seconds())
+	promhttp.HandlerFor(registry, promhttp.HandlerOpts{}).ServeHTTP(w, r)
+}
+
+func extractDays(body string) (float64, error) {
+	var result = re.FindStringSubmatch(body)
+	if len(result) < 2 {
+		return 0, fmt.Errorf("couldnt parse whois response: %s", body)
 	}
 	var dateStr = strings.TrimSpace(result[2])
 	for _, format := range formats {
 		if date, err := time.Parse(format, dateStr); err == nil {
 			var days = math.Floor(time.Until(date).Hours() / 24)
-			log.With("days", days).With("date", date).Debug("got info")
-			expiryGauge.Set(days)
-			probeDurationGauge.Set(time.Since(start).Seconds())
-			promhttp.HandlerFor(registry, promhttp.HandlerOpts{}).ServeHTTP(w, r)
-			return
+			return days, nil
 		}
 	}
-	http.Error(
-		w,
-		fmt.Sprintf("couldnt parse date from whois of domain: %s", target),
-		http.StatusInternalServerError,
-	)
+	return 0, fmt.Errorf("could not parse date: %s", dateStr)
 }

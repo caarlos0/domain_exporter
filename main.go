@@ -20,7 +20,7 @@ var (
 	debug   = kingpin.Flag("debug", "show debug logs").Default("false").Bool()
 	version = "master"
 
-	re = regexp.MustCompile(`(?i)(Registry Expiry Date|paid-till|Expiration Date|Expiry.*|expires.*|Expires): (.*)`)
+	re = regexp.MustCompile(`(?i)(Registry Expiry Date|paid-till|Expiration Date|Expiry.*|expires.*|Expires):\s+(.*)`)
 
 	formats = []string{
 		time.ANSIC,
@@ -33,7 +33,8 @@ var (
 		time.RFC1123Z,
 		time.RFC3339,
 		time.RFC3339Nano,
-		"20060102", // lol registro.br
+		"20060102",   // .com.br
+		"2006-01-02", // .lt
 	}
 )
 
@@ -113,7 +114,7 @@ func probeHandler(w http.ResponseWriter, r *http.Request) {
 func extractDays(body string) (float64, error) {
 	var result = re.FindStringSubmatch(body)
 	if len(result) < 2 {
-		return 0, fmt.Errorf("couldnt parse whois response: %s", body)
+		return 0, fmt.Errorf("could not parse whois response: %s", body)
 	}
 	var dateStr = strings.TrimSpace(result[2])
 	for _, format := range formats {

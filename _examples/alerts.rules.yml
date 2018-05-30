@@ -1,5 +1,5 @@
 groups:
-- name: _examples/alerts.rules
+- name: domain
   rules:
   - alert: DomainExpiring
     expr: domain_expiry_days < 30
@@ -7,7 +7,7 @@ groups:
     labels:
       severity: warning
     annotations:
-      description: Domain {{ $labels.domain }} will expire in less than 30 days
+      description: 'Domain {{ $labels.domain }} will expire in less than 30 days'
       summary: '{{ $labels.domain }}: domain is expiring'
   - alert: DomainExpiring
     expr: domain_expiry_days < 5
@@ -15,5 +15,5 @@ groups:
     labels:
       severity: page
     annotations:
-      description: Domain {{ $labels.domain }} will expire in less than 5 days
+      description: 'Domain {{ $labels.domain }} will expire in less than 5 days'
       summary: '{{ $labels.domain }}: domain is expiring'

@@ -54,10 +54,11 @@ func TestWhoisParsing(t *testing.T) {
 		err    string
 	}{
 		{domain: "domreg.lt", err: ""},
+		{domain: "fakedomain.foo", err: "could not parse date"},
 		{domain: "google.com", err: ""},
 		{domain: "google.de", err: "could not parse whois response"},
+		{domain: "nic.ua", err: ""},
 		{domain: "watchub.pw", err: ""},
-		{domain: "fakedomain.foo", err: "could not parse date"},
 	} {
 		tt := tt
 		t.Run(tt.domain, func(t *testing.T) {

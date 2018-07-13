@@ -20,7 +20,7 @@ var (
 	debug   = kingpin.Flag("debug", "show debug logs").Default("false").Bool()
 	version = "master"
 
-	re = regexp.MustCompile(`(?i)(Registry Expiry Date|paid-till|Expiration Date|Expiry.*|expires.*|Expires):\s+(.*)`)
+	re = regexp.MustCompile(`(?i)(Registry Expiry Date|paid-till|Expiration Date|Expiration Time|Expiry.*|expires.*|Expires|Expires On):\s+(.*)`)
 
 	formats = []string{
 		time.ANSIC,
@@ -36,6 +36,8 @@ var (
 		"20060102",               // .com.br
 		"2006-01-02",             // .lt
 		"2006-01-02 15:04:05-07", // .ua
+		"2006-01-02 15:04:05",    // .ch
+		"2006-01-02T15:04:05Z",   // .name
 	}
 )
 

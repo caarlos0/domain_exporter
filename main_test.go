@@ -55,8 +55,10 @@ func TestWhoisParsing(t *testing.T) {
 	}{
 		{domain: "domreg.lt", err: ""},
 		{domain: "fakedomain.foo", err: "could not parse date"},
+		{domain: "google.cn", err: ""},
 		{domain: "google.com", err: ""},
 		{domain: "google.de", err: "could not parse whois response"},
+		{domain: "google.name", err: ""},
 		{domain: "nic.ua", err: ""},
 		{domain: "watchub.pw", err: ""},
 	} {

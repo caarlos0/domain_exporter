@@ -20,6 +20,7 @@ var (
 	debug   = kingpin.Flag("debug", "show debug logs").Default("false").Bool()
 	version = "master"
 
+	// nolint: lll
 	re = regexp.MustCompile(`(?i)(Registry Expiry Date|paid-till|Expiration Date|Expiration Time|Expiry.*|expires.*|Expires|Expires On):\s+(.*)`)
 
 	formats = []string{

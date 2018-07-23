@@ -84,7 +84,7 @@ func main() {
 
 func probeHandler(w http.ResponseWriter, r *http.Request) {
 	var params = r.URL.Query()
-	var target = params.Get("target")
+	var target = strings.Replace(params.Get("target"), "www.", "", 1)
 	var registry = prometheus.NewRegistry()
 	var start = time.Now()
 	var expiryGauge = prometheus.NewGauge(prometheus.GaugeOpts{

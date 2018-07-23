@@ -21,7 +21,7 @@ var (
 	version = "master"
 
 	// nolint: lll
-	re = regexp.MustCompile(`(?i)(Registry Expiry Date|paid-till|Expiration Date|Expiration Time|Expiry.*|expires.*|Expires|Expires On):\s+(.*)`)
+	re = regexp.MustCompile(`(?i)(Registry Expiry Date|paid-till|Expiration Date|Expiration Time|Expiry.*|expires.*|Expires|Expires On|expire|Renewal Date|Expire Date):\s+(.*)`)
 
 	formats = []string{
 		time.ANSIC,
@@ -39,6 +39,12 @@ var (
 		"2006-01-02 15:04:05-07", // .ua
 		"2006-01-02 15:04:05",    // .ch
 		"2006-01-02T15:04:05Z",   // .name
+		"January  2 2006",        // .io
+		"02.01.2006",             // .cz
+		"02/01/2006",             // .fr
+		"02-January-2006",        // .ie
+		"2006.01.02 15:04:05",    // .pl
+		"02-Jan-2006",            // .co.uk
 	}
 )
 

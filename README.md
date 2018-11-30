@@ -16,7 +16,7 @@ docker run -p 9222:9222 caarlos0/domain_exporter
 
 ## Configuration
 
-On the prometheus settings, add the domain_expoter prober:
+On the prometheus settings, add the domain_exporter prober:
 
 ```yaml
 - job_name: domain

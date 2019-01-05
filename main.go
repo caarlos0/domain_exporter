@@ -2,51 +2,24 @@ package main
 
 import (
 	"fmt"
-	"math"
 	"net/http"
-	"regexp"
 	"strings"
-	"time"
 
 	"github.com/alecthomas/kingpin"
-	"github.com/domainr/whois"
+	"github.com/caarlos0/domain_exporter/client"
+	"github.com/caarlos0/domain_exporter/collector"
+	cache "github.com/patrickmn/go-cache"
 	"github.com/prometheus/client_golang/prometheus"
 	"github.com/prometheus/client_golang/prometheus/promhttp"
 	"github.com/prometheus/common/log"
 )
 
+// nolint: gochecknoglobals
 var (
-	bind    = kingpin.Flag("bind", "addr to bind the server").Short('b').Default(":9222").String()
-	debug   = kingpin.Flag("debug", "show debug logs").Default("false").Bool()
-	version = "master"
-
-	// nolint: lll
-	re = regexp.MustCompile(`(?i)(Registry Expiry Date|paid-till|Expiration Date|Expiration Time|Expiry.*|expires.*|Expires|Expires On|expire|Renewal Date|Expire Date):\s+(.*)`)
-
-	formats = []string{
-		time.ANSIC,
-		time.UnixDate,
-		time.RubyDate,
-		time.RFC822,
-		time.RFC822Z,
-		time.RFC850,
-		time.RFC1123,
-		time.RFC1123Z,
-		time.RFC3339,
-		time.RFC3339Nano,
-		"20060102",               // .com.br
-		"2006-01-02",             // .lt
-		"2006-01-02 15:04:05-07", // .ua
-		"2006-01-02 15:04:05",    // .ch
-		"2006-01-02T15:04:05Z",   // .name
-		"January  2 2006",        // .is
-		"02.01.2006",             // .cz
-		"02/01/2006",             // .fr
-		"02-January-2006",        // .ie
-		"2006.01.02 15:04:05",    // .pl
-		"02-Jan-2006",            // .co.uk
-		"2006/01/02",             // .ca
-	}
+	bind     = kingpin.Flag("bind", "addr to bind the server").Short('b').Default(":9222").String()
+	debug    = kingpin.Flag("debug", "show debug logs").Default("false").Bool()
+	interval = kingpin.Flag("refresh.interval", "time between refreshes with whois api").Default("30m").Duration()
+	version  = "master"
 )
 
 func main() {
@@ -60,9 +33,11 @@ func main() {
 	}
 
 	log.Info("starting domain_exporter", version)
+	var cache = cache.New(*interval, *interval)
+	var cli = client.NewCachedClient(client.NewWhoisClient(), cache)
 
 	http.Handle("/metrics", promhttp.Handler())
-	http.HandleFunc("/probe", probeHandler)
+	http.HandleFunc("/probe", probeHandler(cli))
 	http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
 		fmt.Fprintf(
 			w, `
@@ -83,56 +58,18 @@ func main() {
 	}
 }
 
-func probeHandler(w http.ResponseWriter, r *http.Request) {
-	var params = r.URL.Query()
-	var target = strings.Replace(params.Get("target"), "www.", "", 1)
-	var registry = prometheus.NewRegistry()
-	var start = time.Now()
-	var expiryGauge = prometheus.NewGauge(prometheus.GaugeOpts{
-		Name: "domain_expiry_days",
-		Help: "time in days until the domain expires",
-	})
-	var probeDurationGauge = prometheus.NewGauge(prometheus.GaugeOpts{
-		Name: "probe_duration_seconds",
-		Help: "Returns how long the probe took to complete in seconds",
-	})
-	registry.MustRegister(expiryGauge)
-	registry.MustRegister(probeDurationGauge)
-	if target == "" {
-		http.Error(w, "target parameter is missing", http.StatusBadRequest)
-		return
-	}
-	req, err := whois.NewRequest(target)
-	if err != nil {
-		http.Error(w, err.Error(), http.StatusBadRequest)
-		return
-	}
-	resp, err := whois.DefaultClient.Fetch(req)
-	if err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
-		return
-	}
-	days, err := extractDays(string(resp.Body))
-	if err != nil {
-		http.Error(w, fmt.Sprintf("%s: %s", target, err.Error()), http.StatusInternalServerError)
-		return
-	}
-	expiryGauge.Set(days)
-	probeDurationGauge.Set(time.Since(start).Seconds())
-	promhttp.HandlerFor(registry, promhttp.HandlerOpts{}).ServeHTTP(w, r)
-}
-
-func extractDays(body string) (float64, error) {
-	var result = re.FindStringSubmatch(body)
-	if len(result) < 2 {
-		return 0, fmt.Errorf("could not parse whois response: %s", body)
-	}
-	var dateStr = strings.TrimSpace(result[2])
-	for _, format := range formats {
-		if date, err := time.Parse(format, dateStr); err == nil {
-			var days = math.Floor(time.Until(date).Hours() / 24)
-			return days, nil
+func probeHandler(cli client.Client) http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) {
+		var params = r.URL.Query()
+		var target = strings.Replace(params.Get("target"), "www.", "", 1)
+		if target == "" {
+			log.Error("target parameter missing")
+			http.Error(w, "target parameter is missing", http.StatusBadRequest)
+			return
 		}
+
+		var registry = prometheus.NewRegistry()
+		registry.MustRegister(collector.NewDomainCollector(cli, target))
+		promhttp.HandlerFor(registry, promhttp.HandlerOpts{}).ServeHTTP(w, r)
 	}
-	return 0, fmt.Errorf("could not parse date: %s", dateStr)
 }

@@ -26,7 +26,7 @@ func (c cachedClient) ExpireTime(domain string) (time.Time, error) {
 		log.Debugf("using result from cache for %s", domain)
 		return cached.(time.Time), nil
 	}
-	log.Debugf("using result from API for %s", domain)
+	log.Debugf("using result from whois for %s", domain)
 	live, err := c.client.ExpireTime(domain)
 	c.cache.Set(domain, live, cache.DefaultExpiration)
 	return live, err

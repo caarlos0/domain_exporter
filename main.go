@@ -18,7 +18,7 @@ import (
 var (
 	bind     = kingpin.Flag("bind", "addr to bind the server").Short('b').Default(":9222").String()
 	debug    = kingpin.Flag("debug", "show debug logs").Default("false").Bool()
-	interval = kingpin.Flag("refresh.interval", "time between refreshes with whois api").Default("30m").Duration()
+	interval = kingpin.Flag("cache", "time to cache the result of whois calls").Default("2h").Duration()
 	version  = "master"
 )
 

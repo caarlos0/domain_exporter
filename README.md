@@ -20,7 +20,6 @@ On the prometheus settings, add the domain_exporter prober:
 
 ```yaml
 - job_name: domain
-  scrape_interval: 2h
   metrics_path: /probe
   relabel_configs:
     - source_labels: [__address__]

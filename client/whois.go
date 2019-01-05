@@ -9,33 +9,36 @@ import (
 	"github.com/domainr/whois"
 )
 
-var formats = []string{
-	time.ANSIC,
-	time.UnixDate,
-	time.RubyDate,
-	time.RFC822,
-	time.RFC822Z,
-	time.RFC850,
-	time.RFC1123,
-	time.RFC1123Z,
-	time.RFC3339,
-	time.RFC3339Nano,
-	"20060102",               // .com.br
-	"2006-01-02",             // .lt
-	"2006-01-02 15:04:05-07", // .ua
-	"2006-01-02 15:04:05",    // .ch
-	"2006-01-02T15:04:05Z",   // .name
-	"January  2 2006",        // .is
-	"02.01.2006",             // .cz
-	"02/01/2006",             // .fr
-	"02-January-2006",        // .ie
-	"2006.01.02 15:04:05",    // .pl
-	"02-Jan-2006",            // .co.uk
-	"2006/01/02",             // .ca
-}
+// nolint: gochecknoglobals
+var (
+	formats = []string{
+		time.ANSIC,
+		time.UnixDate,
+		time.RubyDate,
+		time.RFC822,
+		time.RFC822Z,
+		time.RFC850,
+		time.RFC1123,
+		time.RFC1123Z,
+		time.RFC3339,
+		time.RFC3339Nano,
+		"20060102",               // .com.br
+		"2006-01-02",             // .lt
+		"2006-01-02 15:04:05-07", // .ua
+		"2006-01-02 15:04:05",    // .ch
+		"2006-01-02T15:04:05Z",   // .name
+		"January  2 2006",        // .is
+		"02.01.2006",             // .cz
+		"02/01/2006",             // .fr
+		"02-January-2006",        // .ie
+		"2006.01.02 15:04:05",    // .pl
+		"02-Jan-2006",            // .co.uk
+		"2006/01/02",             // .ca
+	}
 
-// nolint: lll
-var re = regexp.MustCompile(`(?i)(Registry Expiry Date|paid-till|Expiration Date|Expiration Time|Expiry.*|expires.*|Expires|Expires On|expire|Renewal Date|Expire Date):\s+(.*)`)
+	// nolint: lll
+	re = regexp.MustCompile(`(?i)(Registry Expiry Date|paid-till|Expiration Date|Expiration Time|Expiry.*|expires.*|Expires|Expires On|expire|Renewal Date|Expire Date):\s+(.*)`)
+)
 
 type whoisClient struct {
 }

@@ -38,7 +38,7 @@ var (
 	}
 
 	// nolint: lll
-	re = regexp.MustCompile(`(?i)(Registry Expiry Date|paid-till|Expiration Date|Expiration Time|Expiry|expires|Expires|Expires On|expire|Renewal Date|Expire Date|Record expires on):?\s+(.*)`)
+	re = regexp.MustCompile(`(?i)(Registry Expiry Date|paid-till|Expiration Date|Expiration Time|Expiry date|Expiry|expires|Expires|Expires On|expire|Renewal Date|Expire Date|Record expires on):?\s+(.*)`)
 )
 
 type whoisClient struct {

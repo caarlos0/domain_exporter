@@ -19,6 +19,7 @@ func TestWhoisParsing(t *testing.T) {
 		{domain: "google.de", err: "could not parse whois response"},
 		{domain: "nic.ua", err: ""},
 		{domain: "taiwannews.com.tw", err: ""},
+		{domain: "bbc.co.uk", err: ""},
 		// {domain: "watchub.pw", err: ""}, // TODO: this for some reason fails on travis
 	} {
 		tt := tt

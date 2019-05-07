@@ -1,0 +1,14 @@
+FROM golang:1.11 as builder
+
+ENV GOBIN /go/bin
+
+COPY . .
+
+RUN go get \
+  && go build -o domain_exporter main.go
+
+FROM gcr.io/distroless/base
+EXPOSE 9222
+WORKDIR /
+COPY --from=builder /go/domain_exporter .
+ENTRYPOINT ["./domain_exporter"]

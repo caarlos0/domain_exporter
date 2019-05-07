@@ -3,6 +3,7 @@ package main
 import (
 	"fmt"
 	"net/http"
+	"os"
 	"strings"
 
 	"github.com/alecthomas/kingpin"
@@ -27,6 +28,11 @@ func main() {
 	kingpin.HelpFlag.Short('h')
 	kingpin.Parse()
 
+	urlPrefix, urlPrefixOK := os.LookupEnv("DOMAIN_EXPORTER_URL_PREFIX")
+	if !urlPrefixOK {
+		urlPrefix = ""
+	}
+
 	if *debug {
 		_ = log.Base().SetLevel("debug")
 		log.Debug("enabled debug mode")
@@ -45,11 +51,11 @@ func main() {
 			<head><title>Domain Exporter</title></head>
 			<body>
 				<h1>Domain Exporter</h1>
-				<p><a href="/metrics">Metrics</a></p>
-				<p><a href="/probe?target=google.com">probe google.com</a></p>
+				<p><a href="%[1]s/metrics">Metrics</a></p>
+				<p><a href="%[1]s/probe?target=google.com">probe google.com</a></p>
 			</body>
 			</html>
-			`,
+			`, urlPrefix,
 		)
 	})
 	log.Info("listening on", *bind)

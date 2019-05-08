@@ -14,6 +14,16 @@ Or with docker:
 docker run -p 9222:9222 caarlos0/domain_exporter
 ```
 
+#### Environment variables
+
+- `DOMAIN_EXPORTER_URL_PREFIX` - use when HTTP endpoint served with a prefix, e.g.:
+
+  For this endpoint `http://example.org/exporters/domains` set to `/exporters/domains`.
+
+  Not really required since useful only to prevent breaking human-oriented links.
+
+  Defaults to empty string.
+
 ## Configuration
 
 On the prometheus settings, add the domain_exporter prober:

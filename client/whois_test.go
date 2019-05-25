@@ -20,6 +20,10 @@ func TestWhoisParsing(t *testing.T) {
 		{domain: "nic.ua", err: ""},
 		{domain: "taiwannews.com.tw", err: ""},
 		{domain: "bbc.co.uk", err: ""},
+		{domain: "google.sk", err: ""},
+		{domain: "google.ro", err: ""},
+		{domain: "google.pt", err: ""},
+		{domain: "google.it", err: ""},
 		// {domain: "watchub.pw", err: ""}, // TODO: this for some reason fails on travis
 	} {
 		tt := tt

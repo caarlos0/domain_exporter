@@ -1,9 +1,2 @@
 _examples
 .git
-.gitignore
-.goreleaser.yml
-.travis.yml
-go.mod
-go.sum
-LICENSE.md
-README.md

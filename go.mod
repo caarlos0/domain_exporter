@@ -3,7 +3,7 @@ module github.com/caarlos0/domain_exporter
 require (
 	github.com/PuerkitoBio/goquery v1.4.0 // indirect
 	github.com/alecthomas/kingpin v2.2.6+incompatible
-	github.com/andybalholm/cascadia v1.0.0 // indirect
+	github.com/andybalholm/cascadia v1.1.0 // indirect
 	github.com/domainr/whois v0.0.0-20180221144318-5d48ef794bef
 	github.com/domainr/whoistest v0.0.0-20180714175718-26cad4b7c941 // indirect
 	github.com/kr/pretty v0.1.0 // indirect

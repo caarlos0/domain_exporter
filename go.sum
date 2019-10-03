@@ -19,6 +19,8 @@ github.com/davecgh/go-spew v1.1.1 h1:vj9j/u1bqnvCEfJOwUhtlOARqs3+rkHYY13jYWTU97c
 github.com/davecgh/go-spew v1.1.1/go.mod h1:J7Y8YcW2NihsgmVo/mv3lAwl/skON4iLHjSsI+c5H38=
 github.com/domainr/whois v0.0.0-20180221144318-5d48ef794bef h1:Erzz6hhlGZIa+hitEWpA83+52r7pqRSDTts2hg4actc=
 github.com/domainr/whois v0.0.0-20180221144318-5d48ef794bef/go.mod h1:gtNPHEJSqhDlO2zVW0ai2b4voo5NWzFyNFPBMB0fDs0=
+github.com/domainr/whois v0.0.0-20180714175948-975c7833b02e h1:iZ+fhG8+rFlxdqv88o5tMyH89H6AWx0WJgUXhiSxkhA=
+github.com/domainr/whois v0.0.0-20180714175948-975c7833b02e/go.mod h1:gtNPHEJSqhDlO2zVW0ai2b4voo5NWzFyNFPBMB0fDs0=
 github.com/domainr/whoistest v0.0.0-20180714175718-26cad4b7c941 h1:E7ehdIemEeScp8nVs0JXNXEbzb2IsHCk13ijvwKqRWI=
 github.com/domainr/whoistest v0.0.0-20180714175718-26cad4b7c941/go.mod h1:iuCHv1qZDoHJNQs56ZzzoKRSKttGgTr2yByGpSlKsII=
 github.com/fsnotify/fsnotify v1.4.7 h1:IXs+QLmnXW2CcXuY+8Mzv/fWEsPGWxqefPtCP5CnV9I=

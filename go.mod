@@ -18,7 +18,7 @@ require (
 	github.com/stretchr/testify v1.4.0
 	github.com/zonedb/zonedb v1.0.2452 // indirect
 	golang.org/x/net v0.0.0-20191003171128-d98b1b443823 // indirect
-	golang.org/x/sys v0.0.0-20191005200804-aed5e4c7ecf9 // indirect
+	golang.org/x/sys v0.0.0-20191007092633-5f54ce542709 // indirect
 	gopkg.in/check.v1 v1.0.0-20180628173108-788fd7840127 // indirect
 )
 

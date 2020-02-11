@@ -1,27 +1,32 @@
 before:
   hooks:
     - go mod download
-build:
-  goarch:
+builds:
+- goarch:
     - amd64
     - arm
   env:
     - CGO_ENABLED=0
-brew:
-  github:
+brews:
+- github:
     owner: caarlos0
     name: homebrew-tap
   folder: Formula
 checksum:
   name_template: '{{ .ProjectName }}_checksums.txt'
-archive:
-  name_template: '{{ .Binary }}_{{ .Os }}_{{ .Arch }}'
+archives:
+- name_template: '{{ .Binary }}_{{ .Os }}_{{ .Arch }}'
   files:
   - '_examples/*'
   - '*.md'
 dockers:
-  - image: caarlos0/domain_exporter
-    tag_templates:
-    - latest
-    - "{{ .Tag }}"
-    - "v{{ .Major }}"
+- image_templates:
+  - "caarlos0/domain_exporter:latest"
+  - "caarlos0/domain_exporter:{{ .Tag }}"
+  - "caarlos0/domain_exporter:v{{ .Major }}"
+  build_flag_templates:
+  - "--pull"
+  - "--label=org.opencontainers.image.created={{.Date}}"
+  - "--label=org.opencontainers.image.name={{.ProjectName}}"
+  - "--label=org.opencontainers.image.revision={{.FullCommit}}"
+  - "--label=org.opencontainers.image.version={{.Version}}"

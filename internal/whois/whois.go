@@ -35,7 +35,7 @@ var (
 		"02-January-2006",          // .ie
 		"2006.01.02 15:04:05",      // .pl
 		"02-Jan-2006",              // .co.uk
-		"2006/01/02",               // .ca
+		"2006/01/02",               // .ca, .jp
 		"2006-01-02 (YYYY-MM-DD)",  // .tw
 		"(dd/mm/yyyy): 02/01/2006", // .pt
 		"02-Jan-2006 15:04:05 UTC", // .id, .co.id
@@ -44,7 +44,7 @@ var (
 	}
 
 	// nolint: lll
-	re = regexp.MustCompile(`(?i)(Valid Until|Expire Date|Registry Expiry Date|paid-till|Expiration Date|Expiration Time|Expiry date|Expiry|Expires On|expires|Expires|expire|Renewal Date|Record expires on):?\s?(.*)`)
+	re = regexp.MustCompile(`(?i)(Valid Until|Expire Date|Registry Expiry Date|paid-till|Expiration Date|Expiration Time|Expiry date|Expiry|Expires On|expires|Expires|expire|Renewal Date|Record expires on)\]?:?\s?(.*)`)
 )
 
 type whoisClient struct{}

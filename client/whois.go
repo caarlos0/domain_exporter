@@ -47,7 +47,7 @@ var (
 type whoisClient struct {
 }
 
-// NewWhoisClient return a "live" whois client
+// NewWhoisClient return a "live" whois client.
 func NewWhoisClient() Client {
 	return whoisClient{}
 }

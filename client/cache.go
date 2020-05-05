@@ -7,7 +7,7 @@ import (
 	"github.com/prometheus/common/log"
 )
 
-// NewCachedClient returns a new cached client
+// NewCachedClient returns a new cached client.
 func NewCachedClient(client Client, cache *cache.Cache) Client {
 	return cachedClient{
 		client: client,

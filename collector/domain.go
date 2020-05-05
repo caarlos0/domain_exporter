@@ -20,7 +20,7 @@ type domainCollector struct {
 	probeDuration *prometheus.Desc
 }
 
-// NewDomainCollector returns a domain collector
+// NewDomainCollector returns a domain collector.
 func NewDomainCollector(client client.Client, domain string) prometheus.Collector {
 	const namespace = "domain"
 	const subsystem = ""

@@ -22,9 +22,9 @@ func TestWhoisParsing(t *testing.T) {
 		{domain: "bbc.co.uk", err: ""},
 		{domain: "google.sk", err: ""},
 		{domain: "google.ro", err: ""},
-		// {domain: "google.pt", err: ""}, // TODO: this for some reason fails on travis
-		{domain: "google.it", err: ""},
-		// {domain: "watchub.pw", err: ""}, // TODO: this for some reason fails on travis
+		//{domain: "google.pt", err: ""}, // TODO: random failures
+		//{domain: "google.it", err: ""}, // TODO: random failures
+		{domain: "watchub.pw", err: ""},
 		{domain: "google.co.id", err: ""},
 		{domain: "google.kr", err: ""},
 	} {

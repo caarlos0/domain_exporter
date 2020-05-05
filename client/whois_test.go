@@ -34,7 +34,7 @@ func TestWhoisParsing(t *testing.T) {
 			expiry, err := NewWhoisClient().ExpireTime(tt.domain)
 			if tt.err == "" {
 				require.NoError(t, err)
-				require.True(t, (time.Since(expiry).Hours() < 0), "domain must not be expired")
+				require.True(t, time.Since(expiry).Hours() < 0, "domain must not be expired")
 			} else {
 				require.Error(t, err)
 				require.Contains(t, err.Error(), tt.err)

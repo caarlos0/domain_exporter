@@ -1,6 +1,7 @@
 package client
 
 import (
+	"fmt"
 	"testing"
 	"time"
 
@@ -8,12 +9,19 @@ import (
 	"github.com/stretchr/testify/require"
 )
 
-type cacheTestClient struct {
+type testClient struct {
 	result *time.Time
 }
 
-func (f cacheTestClient) ExpireTime(domain string) (time.Time, error) {
+func (f testClient) ExpireTime(_ string) (time.Time, error) {
 	return *f.result, nil
+}
+
+type errTestClient struct {
+}
+
+func (f errTestClient) ExpireTime(_ string) (time.Time, error) {
+	return time.Now(), fmt.Errorf("failed to get domain info blah")
 }
 
 func TestCachedClient(t *testing.T) {
@@ -21,7 +29,7 @@ func TestCachedClient(t *testing.T) {
 	var expected = time.Now()
 	var domain = "foo.bar"
 
-	var cli = NewCachedClient(cacheTestClient{result: &expected}, cache)
+	var cli = NewCachedClient(testClient{result: &expected}, cache)
 
 	// test getting from out fake client
 	t.Run("get fresh", func(t *testing.T) {
@@ -47,5 +55,18 @@ func TestCachedClient(t *testing.T) {
 		res, err := cli.ExpireTime(domain)
 		require.NoError(t, err)
 		require.Equal(t, expected, res)
+	})
+
+	t.Run("do not cache errors", func(t *testing.T) {
+		cache.Flush()
+
+		var cli = NewCachedClient(errTestClient{}, cache)
+		_, err := cli.ExpireTime(domain)
+		require.Error(t, err)
+		_, err = cli.ExpireTime(domain)
+		require.Error(t, err)
+		cached, got := cache.Get(domain)
+		require.Nil(t, cached)
+		require.False(t, got)
 	})
 }

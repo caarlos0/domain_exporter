@@ -6,8 +6,7 @@ import (
 	"time"
 
 	"github.com/caarlos0/domain_exporter/rdapclient"
-
-	"domain_exporter/client"
+	"github.com/caarlos0/domain_exporter/client"
 	"github.com/prometheus/client_golang/prometheus"
 	"github.com/prometheus/common/log"
 )

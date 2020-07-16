@@ -1,4 +1,4 @@
-module github.com/itcrow/domain_exporter
+module github.com/caarlos0/domain_exporter
 
 require (
 	github.com/alecthomas/kingpin v2.2.6+incompatible

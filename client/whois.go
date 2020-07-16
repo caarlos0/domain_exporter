@@ -74,4 +74,3 @@ func (whoisClient) ExpireTime(domain string) (time.Time, error) {
 	}
 	return time.Now(), fmt.Errorf("could not parse date: %s", dateStr)
 }
-

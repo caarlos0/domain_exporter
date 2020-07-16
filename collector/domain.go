@@ -5,7 +5,7 @@ import (
 	"sync"
 	"time"
 
-	"domain_exporter/rdapclient"
+	"github.com/caarlos0/domain_exporter/rdapclient"
 
 	"domain_exporter/client"
 	"github.com/prometheus/client_golang/prometheus"

@@ -1,14 +1,15 @@
 package collector
 
 import (
-	"domain_exporter/rdapclient"
+
 	"io/ioutil"
 	"net/http"
 	"net/http/httptest"
 	"regexp"
 	"testing"
 
-	"domain_exporter/client"
+	"github.com/caarlos0/domain_exporter/client"
+	"github.com/caarlos0/domain_exporter/rdapclient"
 	"github.com/prometheus/client_golang/prometheus"
 	"github.com/prometheus/client_golang/prometheus/promhttp"
 	"github.com/stretchr/testify/require"

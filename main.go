@@ -1,15 +1,16 @@
 package main
 
 import (
-	"domain_exporter/rdapclient"
+
 	"fmt"
 	"net/http"
 	"os"
 	"strings"
 
 	"github.com/alecthomas/kingpin"
-	"domain_exporter/client"
-	"domain_exporter/collector"
+	"github.com/caarlos0/domain_exporter/client"
+	"github.com/caarlos0/domain_exporter/rdapclient"
+	"github.com/caarlos0/domain_exporter/collector"
 	cache "github.com/patrickmn/go-cache"
 	"github.com/prometheus/client_golang/prometheus"
 	"github.com/prometheus/client_golang/prometheus/promhttp"

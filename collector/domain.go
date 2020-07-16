@@ -62,7 +62,7 @@ func (c *domainCollector) Describe(ch chan<- *prometheus.Desc) {
 func (c *domainCollector) Collect(ch chan<- prometheus.Metric) {
 	c.mutex.Lock()
 	defer c.mutex.Unlock()
-	var start = time.Now()
+	start := time.Now()
 	date, err := c.rdapClient.ExpireTime(c.domain)
 	if err != nil {
 		date, err = c.client.ExpireTime(c.domain)
@@ -71,7 +71,7 @@ func (c *domainCollector) Collect(ch chan<- prometheus.Metric) {
 		}
 	}
 
-	var success = err == nil
+	success := err == nil
 	ch <- prometheus.MustNewConstMetric(
 		c.probeSuccess,
 		prometheus.GaugeValue,

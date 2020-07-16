@@ -45,6 +45,7 @@ type rdapClient struct {
 func NewRdapClient() RdapClient {
 	return rdapClient{}
 }
+
 func (rdapClient) ExpireTime(domain string) (time.Time, error) {
 	client := &rdap.Client{}
 	body, err := client.QueryDomain(domain)

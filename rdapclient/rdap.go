@@ -2,8 +2,9 @@ package rdapclient
 
 import (
 	"fmt"
-	"github.com/openrdap/rdap"
 	"time"
+
+	"github.com/openrdap/rdap"
 )
 
 // nolint: gochecknoglobals

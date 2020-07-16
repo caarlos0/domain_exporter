@@ -2,6 +2,10 @@ package main
 
 import (
 	"fmt"
+	"net/http"
+	"os"
+	"strings"
+
 	"github.com/alecthomas/kingpin"
 	"github.com/caarlos0/domain_exporter/client"
 	"github.com/caarlos0/domain_exporter/collector"
@@ -10,9 +14,6 @@ import (
 	"github.com/prometheus/client_golang/prometheus"
 	"github.com/prometheus/client_golang/prometheus/promhttp"
 	"github.com/prometheus/common/log"
-	"net/http"
-	"os"
-	"strings"
 )
 
 // nolint: gochecknoglobals

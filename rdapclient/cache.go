@@ -1,10 +1,9 @@
 package rdapclient
 
 import (
-	"time"
-
 	cache "github.com/patrickmn/go-cache"
 	"github.com/prometheus/common/log"
+	"time"
 )
 
 // NewCachedClient returns a new cached client.

@@ -1,14 +1,13 @@
 package collector
 
 import (
+	"github.com/caarlos0/domain_exporter/client"
+	"github.com/caarlos0/domain_exporter/rdapclient"
+	"github.com/prometheus/client_golang/prometheus"
+	"github.com/prometheus/common/log"
 	"math"
 	"sync"
 	"time"
-
-	"github.com/caarlos0/domain_exporter/rdapclient"
-	"github.com/caarlos0/domain_exporter/client"
-	"github.com/prometheus/client_golang/prometheus"
-	"github.com/prometheus/common/log"
 )
 
 type domainCollector struct {

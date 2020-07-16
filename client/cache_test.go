@@ -4,7 +4,6 @@ import (
 	"fmt"
 	"testing"
 	"time"
-
 	cache "github.com/patrickmn/go-cache"
 	"github.com/stretchr/testify/require"
 )

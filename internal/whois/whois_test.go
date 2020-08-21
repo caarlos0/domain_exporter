@@ -1,4 +1,4 @@
-package client
+package whois
 
 import (
 	"testing"
@@ -31,7 +31,7 @@ func TestWhoisParsing(t *testing.T) {
 		tt := tt
 		t.Run(tt.domain, func(t *testing.T) {
 			t.Parallel()
-			expiry, err := NewWhoisClient().ExpireTime(tt.domain)
+			expiry, err := NewClient().ExpireTime(tt.domain)
 			if tt.err == "" {
 				require.NoError(t, err)
 				require.True(t, time.Since(expiry).Hours() < 0, "domain must not be expired")

@@ -1,4 +1,4 @@
-package rdapclient
+package client
 
 import (
 	"time"
@@ -8,29 +8,32 @@ import (
 )
 
 // NewCachedClient returns a new cached client.
-func NewCachedRdapClient(client RdapClient, cache *cache.Cache) RdapClient {
-	return cachedRdapClient{
+func NewCachedClient(client Client, cache *cache.Cache) Client {
+	return cachedClient{
 		client: client,
 		cache:  cache,
 	}
 }
 
-type cachedRdapClient struct {
-	client RdapClient
+type cachedClient struct {
+	client Client
 	cache  *cache.Cache
 }
 
-func (c cachedRdapClient) ExpireTime(domain string) (time.Time, error) {
+func (c cachedClient) ExpireTime(domain string) (time.Time, error) {
 	cached, found := c.cache.Get(domain)
 	if found {
 		log.Debugf("using result from cache for %s", domain)
 		return cached.(time.Time), nil
 	}
-	log.Debugf("using result from whois for %s", domain)
+	log.Debugf("getting live result for %s", domain)
 	live, err := c.client.ExpireTime(domain)
 	if err == nil {
-		log.Debugf("not caching %s because it errored", domain)
+		log.Debugf("caching result for %s", domain)
 		c.cache.Set(domain, live, cache.DefaultExpiration)
+		return live, nil
 	}
+
+	log.Debugf("not caching %s because it errored: %v", domain, err)
 	return live, err
 }

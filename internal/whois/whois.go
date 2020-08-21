@@ -1,4 +1,4 @@
-package client
+package whois
 
 import (
 	"fmt"
@@ -6,7 +6,9 @@ import (
 	"strings"
 	"time"
 
+	"github.com/caarlos0/domain_exporter/internal/client"
 	"github.com/domainr/whois"
+	"github.com/prometheus/common/log"
 )
 
 // nolint: gochecknoglobals
@@ -44,15 +46,15 @@ var (
 	re = regexp.MustCompile(`(?i)(Valid Until|Expire Date|Registry Expiry Date|paid-till|Expiration Date|Expiration Time|Expiry date|Expiry|Expires On|expires|Expires|expire|Renewal Date|Expire Date|Record expires on):?\s?(.*)`)
 )
 
-type whoisClient struct {
-}
+type whoisClient struct{}
 
-// NewWhoisClient return a "live" whois client.
-func NewWhoisClient() Client {
+// NewClient return a "live" whois client.
+func NewClient() client.Client {
 	return whoisClient{}
 }
 
 func (whoisClient) ExpireTime(domain string) (time.Time, error) {
+	log.Debugf("trying whois client for %s", domain)
 	req, err := whois.NewRequest(domain)
 	if err != nil {
 		return time.Now(), err

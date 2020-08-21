@@ -1,10 +1,12 @@
-package rdapclient
+package rdap
 
 import (
 	"fmt"
 	"time"
 
+	"github.com/caarlos0/domain_exporter/internal/client"
 	"github.com/openrdap/rdap"
+	"github.com/prometheus/common/log"
 )
 
 // nolint: gochecknoglobals
@@ -39,14 +41,15 @@ var (
 	}
 )
 
-type rdapClient struct {
-}
+type rdapClient struct{}
 
-func NewRdapClient() RdapClient {
+// NewClient returns a new RDAP client.
+func NewClient() client.Client {
 	return rdapClient{}
 }
 
 func (rdapClient) ExpireTime(domain string) (time.Time, error) {
+	log.Debugf("trying rdap client for %s", domain)
 	client := &rdap.Client{}
 	body, err := client.QueryDomain(domain)
 	if err != nil {

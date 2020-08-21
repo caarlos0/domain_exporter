@@ -1,9 +1,10 @@
-package rdapclient
+package rdap
 
 import (
-	"github.com/stretchr/testify/require"
 	"testing"
 	"time"
+
+	"github.com/stretchr/testify/require"
 )
 
 func TestRdapParsing(t *testing.T) {
@@ -28,7 +29,7 @@ func TestRdapParsing(t *testing.T) {
 		tt := tt
 		t.Run(tt.domain, func(t *testing.T) {
 			t.Parallel()
-			expiry, err := NewRdapClient().ExpireTime(tt.domain)
+			expiry, err := NewClient().ExpireTime(tt.domain)
 			if tt.err == "" {
 				require.NoError(t, err)
 				require.True(t, time.Since(expiry).Hours() < 0, "domain must not be expired")

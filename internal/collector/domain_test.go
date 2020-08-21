@@ -1,24 +1,25 @@
 package collector
 
 import (
-
 	"io/ioutil"
 	"net/http"
 	"net/http/httptest"
 	"regexp"
 	"testing"
 
-	"github.com/caarlos0/domain_exporter/client"
-	"github.com/caarlos0/domain_exporter/rdapclient"
+	"github.com/caarlos0/domain_exporter/internal/client"
+	"github.com/caarlos0/domain_exporter/internal/rdap"
+	"github.com/caarlos0/domain_exporter/internal/whois"
 	"github.com/prometheus/client_golang/prometheus"
 	"github.com/prometheus/client_golang/prometheus/promhttp"
 	"github.com/stretchr/testify/require"
 )
 
 func TestCollectorError(t *testing.T) {
-	var client = client.NewWhoisClient()
-	var rdapClient = rdapclient.NewRdapClient()
-	testCollector(t, NewDomainCollector(client, rdapClient, "fake.foo"), func(t *testing.T, status int, body string) {
+	var whoisClient = whois.NewClient()
+	var rdapClient = rdap.NewClient()
+	var multi = client.NewMultiClient(rdapClient, whoisClient)
+	testCollector(t, NewDomainCollector(multi, "fake.foo"), func(t *testing.T, status int, body string) {
 		require.Equal(t, 200, status)
 		require.Contains(t, body, "domain_probe_success 0")
 		require.Contains(t, body, "domain_expiry_days -1")
@@ -26,9 +27,10 @@ func TestCollectorError(t *testing.T) {
 }
 
 func TestNotExpired(t *testing.T) {
-	var client = client.NewWhoisClient()
-	var rdapClient = rdapclient.NewRdapClient()
-	testCollector(t, NewDomainCollector(client, rdapClient, "goreleaser.com"), func(t *testing.T, status int, body string) {
+	var whoisClient = whois.NewClient()
+	var rdapClient = rdap.NewClient()
+	var multi = client.NewMultiClient(rdapClient, whoisClient)
+	testCollector(t, NewDomainCollector(multi, "goreleaser.com"), func(t *testing.T, status int, body string) {
 		require.Equal(t, 200, status)
 		require.Contains(t, body, "domain_probe_success 1")
 		require.Regexp(t, regexp.MustCompile("domain_expiry_days \\d+"), body)

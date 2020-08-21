@@ -1,9 +1,10 @@
-package rdapclient
+package rdap
 
 import (
 	"fmt"
 	"time"
 
+	"github.com/caarlos0/domain_exporter/internal/client"
 	"github.com/openrdap/rdap"
 )
 
@@ -39,10 +40,10 @@ var (
 	}
 )
 
-type rdapClient struct {
-}
+type rdapClient struct{}
 
-func NewRdapClient() RdapClient {
+// NewClient returns a new RDAP client.
+func NewClient() client.Client {
 	return rdapClient{}
 }
 

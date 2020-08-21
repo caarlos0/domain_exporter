@@ -7,9 +7,10 @@ import (
 	"strings"
 
 	"github.com/alecthomas/kingpin"
-	"github.com/caarlos0/domain_exporter/client"
-	"github.com/caarlos0/domain_exporter/collector"
-	"github.com/caarlos0/domain_exporter/rdapclient"
+	"github.com/caarlos0/domain_exporter/internal/client"
+	"github.com/caarlos0/domain_exporter/internal/collector"
+	"github.com/caarlos0/domain_exporter/internal/rdap"
+	"github.com/caarlos0/domain_exporter/internal/whois"
 	cache "github.com/patrickmn/go-cache"
 	"github.com/prometheus/client_golang/prometheus"
 	"github.com/prometheus/client_golang/prometheus/promhttp"
@@ -41,11 +42,11 @@ func main() {
 
 	log.Info("starting domain_exporter", version)
 	cache := cache.New(*interval, *interval)
-	cli := client.NewCachedClient(client.NewWhoisClient(), cache)
-	rcli := rdapclient.NewCachedRdapClient(rdapclient.NewRdapClient(), cache)
+	whoisClient := client.NewCachedClient(whois.NewClient(), cache)
+	rdapClient := client.NewCachedClient(rdap.NewClient(), cache)
 
 	http.Handle("/metrics", promhttp.Handler())
-	http.HandleFunc("/probe", probeHandler(cli, rcli))
+	http.HandleFunc("/probe", probeHandler(client.NewMultiClient(rdapClient, whoisClient)))
 	http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
 		fmt.Fprintf(
 			w, `
@@ -66,7 +67,7 @@ func main() {
 	}
 }
 
-func probeHandler(cli client.Client, rcli rdapclient.RdapClient) http.HandlerFunc {
+func probeHandler(cli client.Client) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		params := r.URL.Query()
 		target := strings.Replace(params.Get("target"), "www.", "", 1)
@@ -77,7 +78,7 @@ func probeHandler(cli client.Client, rcli rdapclient.RdapClient) http.HandlerFun
 		}
 
 		registry := prometheus.NewRegistry()
-		registry.MustRegister(collector.NewDomainCollector(cli, rcli, target))
+		registry.MustRegister(collector.NewDomainCollector(cli, target))
 
 		promhttp.HandlerFor(registry, promhttp.HandlerOpts{}).ServeHTTP(w, r)
 	}

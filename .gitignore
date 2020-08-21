@@ -2,3 +2,5 @@ vendor
 coverage.out
 dist/
 bin/
+.idea/*
+domain_exporter

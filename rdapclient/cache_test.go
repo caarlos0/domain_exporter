@@ -1,9 +1,10 @@
-package client
+package rdapclient
 
 import (
 	"fmt"
 	"testing"
 	"time"
+
 	cache "github.com/patrickmn/go-cache"
 	"github.com/stretchr/testify/require"
 )
@@ -28,7 +29,7 @@ func TestCachedClient(t *testing.T) {
 	var expected = time.Now()
 	var domain = "foo.bar"
 
-	var cli = NewCachedClient(testClient{result: &expected}, cache)
+	var cli = NewCachedRdapClient(testClient{result: &expected}, cache)
 
 	// test getting from out fake client
 	t.Run("get fresh", func(t *testing.T) {
@@ -59,7 +60,7 @@ func TestCachedClient(t *testing.T) {
 	t.Run("do not cache errors", func(t *testing.T) {
 		cache.Flush()
 
-		var cli = NewCachedClient(errTestClient{}, cache)
+		var cli = NewCachedRdapClient(errTestClient{}, cache)
 		_, err := cli.ExpireTime(domain)
 		require.Error(t, err)
 		_, err = cli.ExpireTime(domain)

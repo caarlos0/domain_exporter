@@ -61,12 +61,12 @@ func (whoisClient) ExpireTime(domain string) (time.Time, error) {
 	if err != nil {
 		return time.Now(), err
 	}
-	var body = string(resp.Body)
-	var result = re.FindStringSubmatch(body)
+	body := string(resp.Body)
+	result := re.FindStringSubmatch(body)
 	if len(result) < 2 {
 		return time.Now(), fmt.Errorf("could not parse whois response: %s", body)
 	}
-	var dateStr = strings.TrimSpace(result[2])
+	dateStr := strings.TrimSpace(result[2])
 	for _, format := range formats {
 		if date, err := time.Parse(format, dateStr); err == nil {
 			return date, nil

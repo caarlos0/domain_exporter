@@ -6,14 +6,16 @@ import (
 	"time"
 
 	"github.com/caarlos0/domain_exporter/client"
+	"github.com/caarlos0/domain_exporter/rdapclient"
 	"github.com/prometheus/client_golang/prometheus"
 	"github.com/prometheus/common/log"
 )
 
 type domainCollector struct {
-	mutex  sync.Mutex
-	client client.Client
-	domain string
+	mutex      sync.Mutex
+	client     client.Client
+	rdapClient rdapclient.RdapClient
+	domain     string
 
 	expiryDays    *prometheus.Desc
 	probeSuccess  *prometheus.Desc
@@ -21,12 +23,13 @@ type domainCollector struct {
 }
 
 // NewDomainCollector returns a domain collector.
-func NewDomainCollector(client client.Client, domain string) prometheus.Collector {
+func NewDomainCollector(client client.Client, rdapClient rdapclient.RdapClient, domain string) prometheus.Collector {
 	const namespace = "domain"
 	const subsystem = ""
 	return &domainCollector{
-		client: client,
-		domain: domain,
+		client:     client,
+		rdapClient: rdapClient,
+		domain:     domain,
 		expiryDays: prometheus.NewDesc(
 			prometheus.BuildFQName(namespace, subsystem, "expiry_days"),
 			"time in days until the domain expires",
@@ -59,13 +62,16 @@ func (c *domainCollector) Describe(ch chan<- *prometheus.Desc) {
 func (c *domainCollector) Collect(ch chan<- prometheus.Metric) {
 	c.mutex.Lock()
 	defer c.mutex.Unlock()
-	var start = time.Now()
-
-	date, err := c.client.ExpireTime(c.domain)
+	start := time.Now()
+	date, err := c.rdapClient.ExpireTime(c.domain)
 	if err != nil {
-		log.Errorf("failed to probe %s: %v", c.domain, err)
+		date, err = c.client.ExpireTime(c.domain)
+		if err != nil {
+			log.Errorf("failed to probe %s: %v", c.domain, err)
+		}
 	}
-	var success = err == nil
+
+	success := err == nil
 	ch <- prometheus.MustNewConstMetric(
 		c.probeSuccess,
 		prometheus.GaugeValue,

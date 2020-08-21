@@ -8,7 +8,7 @@ builds:
   env:
     - CGO_ENABLED=0
 brews:
-- github:
+- tap:
     owner: caarlos0
     name: homebrew-tap
   folder: Formula

@@ -16,9 +16,7 @@ import (
 )
 
 func TestCollectorError(t *testing.T) {
-	var whoisClient = whois.NewClient()
-	var rdapClient = rdap.NewClient()
-	var multi = client.NewMultiClient(rdapClient, whoisClient)
+	var multi = client.NewMultiClient(rdap.NewClient(), whois.NewClient())
 	testCollector(t, NewDomainCollector(multi, "fake.foo"), func(t *testing.T, status int, body string) {
 		require.Equal(t, 200, status)
 		require.Contains(t, body, "domain_probe_success 0")
@@ -27,9 +25,7 @@ func TestCollectorError(t *testing.T) {
 }
 
 func TestNotExpired(t *testing.T) {
-	var whoisClient = whois.NewClient()
-	var rdapClient = rdap.NewClient()
-	var multi = client.NewMultiClient(rdapClient, whoisClient)
+	var multi = client.NewMultiClient(rdap.NewClient(), whois.NewClient())
 	testCollector(t, NewDomainCollector(multi, "goreleaser.com"), func(t *testing.T, status int, body string) {
 		require.Equal(t, 200, status)
 		require.Contains(t, body, "domain_probe_success 1")

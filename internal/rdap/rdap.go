@@ -6,6 +6,7 @@ import (
 
 	"github.com/caarlos0/domain_exporter/internal/client"
 	"github.com/openrdap/rdap"
+	"github.com/prometheus/common/log"
 )
 
 // nolint: gochecknoglobals
@@ -48,6 +49,7 @@ func NewClient() client.Client {
 }
 
 func (rdapClient) ExpireTime(domain string) (time.Time, error) {
+	log.Debugf("trying rdap client for %s", domain)
 	client := &rdap.Client{}
 	body, err := client.QueryDomain(domain)
 	if err != nil {

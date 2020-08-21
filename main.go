@@ -61,7 +61,7 @@ func main() {
 			`, urlPrefix,
 		)
 	})
-	log.Info("listening on", *bind)
+	log.Info("listening on ", *bind)
 	if err := http.ListenAndServe(*bind, nil); err != nil {
 		log.Fatalf("error starting server: %s", err)
 	}

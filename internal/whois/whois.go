@@ -8,6 +8,7 @@ import (
 
 	"github.com/caarlos0/domain_exporter/internal/client"
 	"github.com/domainr/whois"
+	"github.com/prometheus/common/log"
 )
 
 // nolint: gochecknoglobals
@@ -53,6 +54,7 @@ func NewClient() client.Client {
 }
 
 func (whoisClient) ExpireTime(domain string) (time.Time, error) {
+	log.Debugf("trying whois client for %s", domain)
 	req, err := whois.NewRequest(domain)
 	if err != nil {
 		return time.Now(), err

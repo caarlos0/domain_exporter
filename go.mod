@@ -7,7 +7,7 @@ require (
 	github.com/domainr/whois v0.0.0-20200821165536-c308e1605d97
 	github.com/openrdap/rdap v0.9.0
 	github.com/patrickmn/go-cache v2.1.0+incompatible
-	github.com/prometheus/client_golang v1.8.0
+	github.com/prometheus/client_golang v1.9.0
 	github.com/prometheus/common v0.15.0
 	github.com/stretchr/testify v1.6.1
 )

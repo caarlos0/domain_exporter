@@ -29,7 +29,7 @@ func TestNotExpired(t *testing.T) {
 	testCollector(t, NewDomainCollector(multi, "goreleaser.com"), func(t *testing.T, status int, body string) {
 		require.Equal(t, 200, status)
 		require.Contains(t, body, "domain_probe_success 1")
-		require.Regexp(t, regexp.MustCompile("domain_expiry_days \\d+"), body)
+		require.Regexp(t, regexp.MustCompile(`domain_expiry_days \d+`), body)
 	})
 }
 

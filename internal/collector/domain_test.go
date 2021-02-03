@@ -16,7 +16,7 @@ import (
 )
 
 func TestCollectorError(t *testing.T) {
-	var multi = client.NewMultiClient(rdap.NewClient(), whois.NewClient())
+	multi := client.NewMultiClient(rdap.NewClient(), whois.NewClient())
 	testCollector(t, NewDomainCollector(multi, "fake.foo"), func(t *testing.T, status int, body string) {
 		require.Equal(t, 200, status)
 		require.Contains(t, body, "domain_probe_success 0")
@@ -25,7 +25,7 @@ func TestCollectorError(t *testing.T) {
 }
 
 func TestNotExpired(t *testing.T) {
-	var multi = client.NewMultiClient(rdap.NewClient(), whois.NewClient())
+	multi := client.NewMultiClient(rdap.NewClient(), whois.NewClient())
 	testCollector(t, NewDomainCollector(multi, "goreleaser.com"), func(t *testing.T, status int, body string) {
 		require.Equal(t, 200, status)
 		require.Contains(t, body, "domain_probe_success 1")
@@ -34,10 +34,10 @@ func TestNotExpired(t *testing.T) {
 }
 
 func testCollector(t *testing.T, collector prometheus.Collector, checker func(t *testing.T, status int, body string)) {
-	var registry = prometheus.NewRegistry()
+	registry := prometheus.NewRegistry()
 	registry.MustRegister(collector)
 
-	var srv = httptest.NewServer(promhttp.HandlerFor(registry, promhttp.HandlerOpts{}))
+	srv := httptest.NewServer(promhttp.HandlerFor(registry, promhttp.HandlerOpts{}))
 	defer srv.Close()
 
 	resp, err := http.Get(srv.URL)

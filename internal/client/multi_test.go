@@ -22,13 +22,13 @@ func (c clisuccess) ExpireTime(domain string) (time.Time, error) {
 
 func TestMulti(t *testing.T) {
 	t.Run("first client succeed", func(t *testing.T) {
-		var expected = time.Now()
+		expected := time.Now()
 		expire, err := NewMultiClient(clisuccess(expected), clifail(0)).ExpireTime("a")
 		require.NoError(t, err)
 		require.Equal(t, expected, expire)
 	})
 	t.Run("last client succeed", func(t *testing.T) {
-		var expected = time.Now()
+		expected := time.Now()
 		expire, err := NewMultiClient(clifail(0), clifail(0), clisuccess(expected)).ExpireTime("a")
 		require.NoError(t, err)
 		require.Equal(t, expected, expire)

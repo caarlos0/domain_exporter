@@ -25,11 +25,11 @@ func (f errTestClient) ExpireTime(_ string) (time.Time, error) {
 }
 
 func TestCachedClient(t *testing.T) {
-	var cache = cache.New(1*time.Minute, 1*time.Minute)
-	var expected = time.Now()
-	var domain = "foo.bar"
+	cache := cache.New(1*time.Minute, 1*time.Minute)
+	expected := time.Now()
+	domain := "foo.bar"
 
-	var cli = NewCachedClient(testClient{result: &expected}, cache)
+	cli := NewCachedClient(testClient{result: &expected}, cache)
 
 	// test getting from out fake client
 	t.Run("get fresh", func(t *testing.T) {
@@ -41,7 +41,7 @@ func TestCachedClient(t *testing.T) {
 	// here we change the inner fake client result, but the result
 	// should be the cached one
 	t.Run("get from cache", func(t *testing.T) {
-		var oldExpected = expected
+		oldExpected := expected
 		expected = time.Now()
 		res, err := cli.ExpireTime(domain)
 		require.NoError(t, err)
@@ -60,7 +60,7 @@ func TestCachedClient(t *testing.T) {
 	t.Run("do not cache errors", func(t *testing.T) {
 		cache.Flush()
 
-		var cli = NewCachedClient(errTestClient{}, cache)
+		cli := NewCachedClient(errTestClient{}, cache)
 		_, err := cli.ExpireTime(domain)
 		require.Error(t, err)
 		_, err = cli.ExpireTime(domain)

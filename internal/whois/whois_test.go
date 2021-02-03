@@ -12,6 +12,7 @@ func TestWhoisParsing(t *testing.T) {
 		domain string
 		err    string
 	}{
+		{domain: "google.ai", err: "could not parse whois response"},
 		{domain: "domreg.lt", err: ""},
 		{domain: "fakedomain.foo", err: "could not parse whois response: Domain not found"},
 		{domain: "google.cn", err: ""},
@@ -22,8 +23,8 @@ func TestWhoisParsing(t *testing.T) {
 		{domain: "bbc.co.uk", err: ""},
 		{domain: "google.sk", err: ""},
 		{domain: "google.ro", err: ""},
-		//{domain: "google.pt", err: ""}, // TODO: random failures
-		//{domain: "google.it", err: ""}, // TODO: random failures
+		// {domain: "google.pt", err: ""}, // timeouts all the time
+		{domain: "google.it", err: ""},
 		{domain: "watchub.pw", err: ""},
 		{domain: "google.co.id", err: ""},
 		{domain: "google.kr", err: ""},

@@ -89,6 +89,12 @@ func (c whoisClient) request(domain, host string) (string, error) {
 		return "", err
 	}
 	body := string(resp.Body)
+
+	if host == "" {
+		// do not recurse
+		return body, nil
+	}
+
 	result := registrarRE.FindStringSubmatch(body)
 	if len(result) < 2 {
 		log.Debugf("couldn't find registrar url in whois response: %s", domain)

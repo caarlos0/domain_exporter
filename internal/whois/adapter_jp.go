@@ -1,8 +1,6 @@
-package client
+package whois
 
-import (
-	"github.com/domainr/whois"
-)
+import "github.com/domainr/whois"
 
 // Adapter for whois.jprs.jp.
 type jpAdapter struct{}

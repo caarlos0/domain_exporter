@@ -24,6 +24,7 @@ var (
 		time.RFC1123Z,
 		time.RFC3339,
 		time.RFC3339Nano,
+		"2006-01-02T15:04:05-0700", // some .com
 		"20060102",                 // .com.br
 		"2006-01-02",               // .lt
 		"2006-01-02 15:04:05-07",   // .ua
@@ -44,7 +45,8 @@ var (
 	}
 
 	// nolint: lll
-	re = regexp.MustCompile(`(?i)(Valid Until|Expire Date|Registry Expiry Date|paid-till|Expiration Date|Expiration Time|Expiry date|Expiry|Expires On|expires|Expires|expire|Renewal Date|Record expires on)\]?:?\s?(.*)`)
+	expiryRE    = regexp.MustCompile(`(?i)(Valid Until|Expire Date|Registry Expiry Date|paid-till|Expiration Date|Expiration Time|Expiry date|Expiry|Expires On|expires|Expires|expire|Renewal Date|Record expires on)\]?:?\s?(.*)`)
+	registrarRE = regexp.MustCompile(`(?i)Registrar WHOIS Server: (.*)`)
 )
 
 type whoisClient struct{}
@@ -54,26 +56,55 @@ func NewClient() client.Client {
 	return whoisClient{}
 }
 
-func (whoisClient) ExpireTime(domain string) (time.Time, error) {
+func (c whoisClient) ExpireTime(domain string) (time.Time, error) {
 	log.Debugf("trying whois client for %s", domain)
-	req, err := whois.NewRequest(domain)
+	body, err := c.request(domain, "")
 	if err != nil {
 		return time.Now(), err
 	}
-	resp, err := whois.DefaultClient.Fetch(req)
-	if err != nil {
-		return time.Now(), err
-	}
-	body := string(resp.Body)
-	result := re.FindStringSubmatch(body)
+	result := expiryRE.FindStringSubmatch(body)
 	if len(result) < 2 {
 		return time.Now(), fmt.Errorf("could not parse whois response: %s", body)
 	}
 	dateStr := strings.TrimSpace(result[2])
 	for _, format := range formats {
 		if date, err := time.Parse(format, dateStr); err == nil {
+			log.Debugf("domain %s will expire at %s", domain, date.String())
 			return date, nil
 		}
 	}
 	return time.Now(), fmt.Errorf("could not parse date: %s", dateStr)
+}
+
+func (c whoisClient) request(domain, host string) (string, error) {
+	req := &whois.Request{
+		Query: domain,
+		Host:  host,
+	}
+	if err := req.Prepare(); err != nil {
+		return "", err
+	}
+	resp, err := whois.DefaultClient.Fetch(req)
+	if err != nil {
+		return "", err
+	}
+	body := string(resp.Body)
+	result := registrarRE.FindStringSubmatch(body)
+	if len(result) < 2 {
+		log.Debugf("couldn't find registrar url in whois response: %s", domain)
+		return body, nil
+	}
+
+	foundHost := strings.TrimSpace(result[1])
+	if foundHost == host || foundHost == "" {
+		return body, nil
+	}
+
+	log.Debugf("found whois host %s for domain %s", foundHost, domain)
+	if newBody, err := c.request(domain, foundHost); err == nil {
+		return newBody, err
+	}
+
+	log.Debugf("ignoring error from %s for %s", foundHost, domain)
+	return body, nil
 }

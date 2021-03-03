@@ -4,10 +4,12 @@ import (
 	"testing"
 	"time"
 
+	"github.com/prometheus/common/log"
 	"github.com/stretchr/testify/require"
 )
 
 func TestWhoisParsing(t *testing.T) {
+	log.Base().SetLevel("debug")
 	for _, tt := range []struct {
 		domain string
 		err    string

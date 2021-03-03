@@ -1,10 +1,12 @@
 before:
   hooks:
-    - go mod download
+    - go mod tidy
 builds:
 - goarch:
     - amd64
-    - arm
+    - arm64
+  goos:
+    - linux
   env:
     - CGO_ENABLED=0
 brews:
@@ -20,13 +22,58 @@ archives:
   - '_examples/*'
   - '*.md'
 dockers:
-- image_templates:
-  - "caarlos0/domain_exporter:latest"
-  - "caarlos0/domain_exporter:{{ .Tag }}"
-  - "caarlos0/domain_exporter:v{{ .Major }}"
-  build_flag_templates:
-  - "--pull"
-  - "--label=org.opencontainers.image.created={{.Date}}"
-  - "--label=org.opencontainers.image.name={{.ProjectName}}"
-  - "--label=org.opencontainers.image.revision={{.FullCommit}}"
-  - "--label=org.opencontainers.image.version={{.Version}}"
+  - image_templates:
+      - 'caarlos0/domain_exporter:{{ .Tag }}-amd64'
+      - 'ghcr.io/caarlos0/domain_exporter:{{ .Tag }}-amd64'
+    dockerfile: Dockerfile
+    use_buildx: true
+    build_flag_templates:
+      - "--pull"
+      - "--label=org.opencontainers.image.created={{.Date}}"
+      - "--label=org.opencontainers.image.name={{.ProjectName}}"
+      - "--label=org.opencontainers.image.revision={{.FullCommit}}"
+      - "--label=org.opencontainers.image.version={{.Version}}"
+      - "--label=org.opencontainers.image.source={{.GitURL}}"
+      - "--platform=linux/amd64"
+  - image_templates:
+      - 'caarlos0/domain_exporter:{{ .Tag }}-arm64v8'
+      - 'ghcr.io/caarlos0/domain_exporter:{{ .Tag }}-arm64v8'
+    dockerfile: Dockerfile
+    use_buildx: true
+    build_flag_templates:
+      - "--pull"
+      - "--label=org.opencontainers.image.created={{.Date}}"
+      - "--label=org.opencontainers.image.name={{.ProjectName}}"
+      - "--label=org.opencontainers.image.revision={{.FullCommit}}"
+      - "--label=org.opencontainers.image.version={{.Version}}"
+      - "--label=org.opencontainers.image.source={{.GitURL}}"
+      - "--platform=linux/arm64/v8"
+    goarch: arm64
+docker_manifests:
+  - name_template: 'caarlos0/domain_exporter:{{ .Tag }}'
+    image_templates:
+      - 'caarlos0/domain_exporter:{{ .Tag }}-amd64'
+      - 'caarlos0/domain_exporter:{{ .Tag }}-arm64v8'
+  - name_template: 'ghcr.io/caarlos0/domain_exporter:{{ .Tag }}'
+    image_templates:
+      - 'ghcr.io/caarlos0/domain_exporter:{{ .Tag }}-amd64'
+      - 'ghcr.io/caarlos0/domain_exporter:{{ .Tag }}-arm64v8'
+  - name_template: 'caarlos0/domain_exporter:latest'
+    image_templates:
+      - 'caarlos0/domain_exporter:{{ .Tag }}-amd64'
+      - 'caarlos0/domain_exporter:{{ .Tag }}-arm64v8'
+  - name_template: 'ghcr.io/caarlos0/domain_exporter:latest'
+    image_templates:
+      - 'ghcr.io/caarlos0/domain_exporter:{{ .Tag }}-amd64'
+      - 'ghcr.io/caarlos0/domain_exporter:{{ .Tag }}-arm64v8'
+nfpms:
+  - file_name_template: '{{ .ProjectName }}_{{ .Arch }}'
+    homepage:  https://github.com/caarlos0/domain_exporter
+    description: Exports the expiration time of your domains as prometheus metrics.
+    maintainer: Carlos Alexandro Becker <root@carlosbecker.com>
+    license: MIT
+    vendor: Carlos Becker
+    formats:
+      - apk
+      - deb
+      - rpm

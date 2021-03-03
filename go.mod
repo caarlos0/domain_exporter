@@ -1,6 +1,6 @@
 module github.com/caarlos0/domain_exporter
 
-go 1.15
+go 1.16
 
 require (
 	github.com/alecthomas/kingpin v2.2.6+incompatible

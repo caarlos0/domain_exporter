@@ -1,5 +1,5 @@
-FROM gcr.io/distroless/base
+FROM alpine
 EXPOSE 9222
-WORKDIR /
-COPY domain_exporter .
-ENTRYPOINT ["./domain_exporter"]
+ENTRYPOINT ["/usr/local/bin/domain_exporter"]
+COPY domain_exporter_*.apk /tmp/
+RUN apk add --allow-untrusted /tmp/domain_exporter_*.apk

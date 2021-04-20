@@ -1,6 +1,8 @@
 before:
   hooks:
     - go mod tidy
+gomod:
+  proxy: true
 builds:
 - goarch:
     - amd64
@@ -28,7 +30,7 @@ dockers:
       - "--label=org.opencontainers.image.name={{.ProjectName}}"
       - "--label=org.opencontainers.image.revision={{.FullCommit}}"
       - "--label=org.opencontainers.image.version={{.Version}}"
-      - "--label=org.opencontainers.image.source={{.GitURL}}"
+      - "--label=org.opencontainers.image.source=https://github.com/caarlos0/domain_exporter"
       - "--platform=linux/amd64"
   - image_templates:
       - 'caarlos0/domain_exporter:{{ .Tag }}-arm64v8'
@@ -41,7 +43,7 @@ dockers:
       - "--label=org.opencontainers.image.name={{.ProjectName}}"
       - "--label=org.opencontainers.image.revision={{.FullCommit}}"
       - "--label=org.opencontainers.image.version={{.Version}}"
-      - "--label=org.opencontainers.image.source={{.GitURL}}"
+      - "--label=org.opencontainers.image.source=https://github.com/caarlos0/domain_exporter"
       - "--platform=linux/arm64/v8"
     goarch: arm64
 docker_manifests:

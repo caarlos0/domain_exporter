@@ -19,7 +19,7 @@ func TestWhoisParsing(t *testing.T) {
 		{domain: "google.com", err: ""},
 		{domain: "google.de", err: "could not parse whois response"},
 		{domain: "nic.ua", err: ""},
-		{domain: "taiwannews.com.tw", err: ""},
+		{domain: "google.com.tw", err: ""},
 		{domain: "bbc.co.uk", err: ""},
 		{domain: "google.sk", err: ""},
 		{domain: "google.ro", err: ""},

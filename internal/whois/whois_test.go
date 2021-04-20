@@ -29,6 +29,7 @@ func TestWhoisParsing(t *testing.T) {
 		{domain: "google.co.id", err: ""},
 		{domain: "google.kr", err: ""},
 		{domain: "google.jp", err: ""},
+		{domain: "microsoft.im", err: ""},
 	} {
 		tt := tt
 		t.Run(tt.domain, func(t *testing.T) {

@@ -8,7 +8,7 @@ import (
 
 	"github.com/caarlos0/domain_exporter/internal/client"
 	"github.com/domainr/whois"
-	"github.com/prometheus/common/log"
+	"github.com/rs/zerolog/log"
 )
 
 // nolint: gochecknoglobals
@@ -60,7 +60,7 @@ func NewClient() client.Client {
 }
 
 func (c whoisClient) ExpireTime(domain string) (time.Time, error) {
-	log.Debugf("trying whois client for %s", domain)
+	log.Debug().Msgf("trying whois client for %s", domain)
 	body, err := c.request(domain, "")
 	if err != nil {
 		return time.Now(), err
@@ -72,7 +72,7 @@ func (c whoisClient) ExpireTime(domain string) (time.Time, error) {
 	dateStr := strings.TrimSpace(result[2])
 	for _, format := range formats {
 		if date, err := time.Parse(format, dateStr); err == nil {
-			log.Debugf("domain %s will expire at %s", domain, date.String())
+			log.Debug().Msgf("domain %s will expire at %s", domain, date.String())
 			return date, nil
 		}
 	}
@@ -100,7 +100,7 @@ func (c whoisClient) request(domain, host string) (string, error) {
 
 	result := registrarRE.FindStringSubmatch(body)
 	if len(result) < 2 {
-		log.Debugf("couldn't find registrar url in whois response: %s", domain)
+		log.Debug().Msgf("couldn't find registrar url in whois response: %s", domain)
 		return body, nil
 	}
 
@@ -109,11 +109,11 @@ func (c whoisClient) request(domain, host string) (string, error) {
 		return body, nil
 	}
 
-	log.Debugf("found whois host %s for domain %s", foundHost, domain)
+	log.Debug().Msgf("found whois host %s for domain %s", foundHost, domain)
 	if newBody, err := c.request(domain, foundHost); err == nil {
 		return newBody, err
 	}
 
-	log.Debugf("ignoring error from %s for %s", foundHost, domain)
+	log.Debug().Msgf("ignoring error from %s for %s", foundHost, domain)
 	return body, nil
 }

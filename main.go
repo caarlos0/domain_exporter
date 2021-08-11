@@ -14,7 +14,8 @@ import (
 	cache "github.com/patrickmn/go-cache"
 	"github.com/prometheus/client_golang/prometheus"
 	"github.com/prometheus/client_golang/prometheus/promhttp"
-	"github.com/prometheus/common/log"
+	"github.com/rs/zerolog"
+	"github.com/rs/zerolog/log"
 )
 
 // nolint: gochecknoglobals
@@ -35,12 +36,14 @@ func main() {
 		urlPrefix = ""
 	}
 
+	// log.Logger = log.Output(zerolog.ConsoleWriter{Out: os.Stderr})
+	zerolog.SetGlobalLevel(zerolog.InfoLevel)
 	if *debug {
-		_ = log.Base().SetLevel("debug")
-		log.Debug("enabled debug mode")
+		zerolog.SetGlobalLevel(zerolog.DebugLevel)
+		log.Debug().Msg("enabled debug mode")
 	}
 
-	log.Info("starting domain_exporter", version)
+	log.Info().Msgf("starting domain_exporter %s", version)
 	cache := cache.New(*interval, *interval)
 	whoisClient := client.NewCachedClient(whois.NewClient(), cache)
 	rdapClient := client.NewCachedClient(rdap.NewClient(), cache)
@@ -61,9 +64,9 @@ func main() {
 			`, urlPrefix,
 		)
 	})
-	log.Info("listening on ", *bind)
+	log.Info().Msgf("listening on %s", *bind)
 	if err := http.ListenAndServe(*bind, nil); err != nil {
-		log.Fatalf("error starting server: %s", err)
+		log.Fatal().Err(err).Msg("error starting server")
 	}
 }
 
@@ -72,7 +75,7 @@ func probeHandler(cli client.Client) http.HandlerFunc {
 		params := r.URL.Query()
 		target := strings.Replace(params.Get("target"), "www.", "", 1)
 		if target == "" {
-			log.Error("target parameter missing")
+			log.Error().Msg("target parameter missing")
 			http.Error(w, "target parameter is missing", http.StatusBadRequest)
 			return
 		}

@@ -7,7 +7,7 @@ import (
 
 	"github.com/caarlos0/domain_exporter/internal/client"
 	"github.com/prometheus/client_golang/prometheus"
-	"github.com/prometheus/common/log"
+	"github.com/rs/zerolog/log"
 )
 
 type domainCollector struct {
@@ -62,7 +62,7 @@ func (c *domainCollector) Collect(ch chan<- prometheus.Metric) {
 	start := time.Now()
 	date, err := c.client.ExpireTime(c.domain)
 	if err != nil {
-		log.Errorf("failed to probe %s: %v", c.domain, err)
+		log.Err(err).Msgf("failed to probe %s", c.domain)
 	}
 
 	success := err == nil

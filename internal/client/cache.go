@@ -4,7 +4,7 @@ import (
 	"time"
 
 	cache "github.com/patrickmn/go-cache"
-	"github.com/prometheus/common/log"
+	"github.com/rs/zerolog/log"
 )
 
 // NewCachedClient returns a new cached client.
@@ -23,17 +23,17 @@ type cachedClient struct {
 func (c cachedClient) ExpireTime(domain string) (time.Time, error) {
 	cached, found := c.cache.Get(domain)
 	if found {
-		log.Debugf("using result from cache for %s", domain)
+		log.Debug().Msgf("using result from cache for %s", domain)
 		return cached.(time.Time), nil
 	}
-	log.Debugf("getting live result for %s", domain)
+	log.Debug().Msgf("getting live result for %s", domain)
 	live, err := c.client.ExpireTime(domain)
 	if err == nil {
-		log.Debugf("caching result for %s", domain)
+		log.Debug().Msgf("caching result for %s", domain)
 		c.cache.Set(domain, live, cache.DefaultExpiration)
 		return live, nil
 	}
 
-	log.Debugf("not caching %s because it errored: %v", domain, err)
+	log.Debug().Msgf("not caching %s because it errored: %v", domain, err)
 	return live, err
 }

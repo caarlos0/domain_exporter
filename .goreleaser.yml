@@ -1,76 +1,20 @@
+variables:
+  homepage: https://github.com/caarlos0/domain_exporter
+  repository: https://github.com/caarlos0/domain_exporter
+  description: Exports the expiration time of your domains in the Prometheus format.
+includes:
+  - from_url:
+      url: https://raw.githubusercontent.com/caarlos0/goreleaserfiles/main/build.yml
+  - from_url:
+      url: https://raw.githubusercontent.com/caarlos0/goreleaserfiles/main/release.yml
+  - from_url:
+      url: https://raw.githubusercontent.com/caarlos0/goreleaserfiles/main/package.yml
+  - from_url:
+      url: https://raw.githubusercontent.com/caarlos0/goreleaserfiles/main/podman.yml
+
 before:
   hooks:
     - go mod tidy
-gomod:
-  proxy: true
-builds:
-- goarch:
-    - amd64
-    - arm64
-  goos:
-    - linux
-  env:
-    - CGO_ENABLED=0
-checksum:
-  name_template: '{{ .ProjectName }}_checksums.txt'
-archives:
-- name_template: '{{ .Binary }}_{{ .Os }}_{{ .Arch }}'
-  files:
-  - '_examples/*'
-  - '*.md'
-dockers:
-  - image_templates:
-      - 'caarlos0/domain_exporter:{{ .Tag }}-amd64'
-      - 'ghcr.io/caarlos0/domain_exporter:{{ .Tag }}-amd64'
-    dockerfile: Dockerfile
-    use_buildx: true
-    build_flag_templates:
-      - "--pull"
-      - "--label=org.opencontainers.image.created={{.Date}}"
-      - "--label=org.opencontainers.image.name={{.ProjectName}}"
-      - "--label=org.opencontainers.image.revision={{.FullCommit}}"
-      - "--label=org.opencontainers.image.version={{.Version}}"
-      - "--label=org.opencontainers.image.source=https://github.com/caarlos0/domain_exporter"
-      - "--platform=linux/amd64"
-  - image_templates:
-      - 'caarlos0/domain_exporter:{{ .Tag }}-arm64v8'
-      - 'ghcr.io/caarlos0/domain_exporter:{{ .Tag }}-arm64v8'
-    dockerfile: Dockerfile
-    use_buildx: true
-    build_flag_templates:
-      - "--pull"
-      - "--label=org.opencontainers.image.created={{.Date}}"
-      - "--label=org.opencontainers.image.name={{.ProjectName}}"
-      - "--label=org.opencontainers.image.revision={{.FullCommit}}"
-      - "--label=org.opencontainers.image.version={{.Version}}"
-      - "--label=org.opencontainers.image.source=https://github.com/caarlos0/domain_exporter"
-      - "--platform=linux/arm64/v8"
-    goarch: arm64
-docker_manifests:
-  - name_template: 'caarlos0/domain_exporter:{{ .Tag }}'
-    image_templates:
-      - 'caarlos0/domain_exporter:{{ .Tag }}-amd64'
-      - 'caarlos0/domain_exporter:{{ .Tag }}-arm64v8'
-  - name_template: 'ghcr.io/caarlos0/domain_exporter:{{ .Tag }}'
-    image_templates:
-      - 'ghcr.io/caarlos0/domain_exporter:{{ .Tag }}-amd64'
-      - 'ghcr.io/caarlos0/domain_exporter:{{ .Tag }}-arm64v8'
-  - name_template: 'caarlos0/domain_exporter:latest'
-    image_templates:
-      - 'caarlos0/domain_exporter:{{ .Tag }}-amd64'
-      - 'caarlos0/domain_exporter:{{ .Tag }}-arm64v8'
-  - name_template: 'ghcr.io/caarlos0/domain_exporter:latest'
-    image_templates:
-      - 'ghcr.io/caarlos0/domain_exporter:{{ .Tag }}-amd64'
-      - 'ghcr.io/caarlos0/domain_exporter:{{ .Tag }}-arm64v8'
-nfpms:
-  - file_name_template: '{{ .ProjectName }}_{{ .Arch }}'
-    homepage:  https://github.com/caarlos0/domain_exporter
-    description: Exports the expiration time of your domains as prometheus metrics.
-    maintainer: Carlos Alexandro Becker <root@carlosbecker.com>
-    license: MIT
-    vendor: Carlos Becker
-    formats:
-      - apk
-      - deb
-      - rpm
+
+furies:
+- account: caarlos0

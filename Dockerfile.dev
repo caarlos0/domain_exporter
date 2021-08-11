@@ -1,5 +1,4 @@
 FROM golang as builder
-ENV GO111MODULE=on
 WORKDIR /code
 ADD go.mod go.sum /code/
 RUN go mod download

@@ -2,18 +2,6 @@
 
 Exports the expiration time of your domains as prometheus metrics.
 
-## Running
-
-```console
-./domain_exporter -b ":9222"
-```
-
-Or with docker:
-
-```console
-docker run -p 9222:9222 caarlos0/domain_exporter
-```
-
 #### Environment variables
 
 - `DOMAIN_EXPORTER_URL_PREFIX` - use when HTTP endpoint served with a prefix, e.g.:
@@ -26,7 +14,7 @@ docker run -p 9222:9222 caarlos0/domain_exporter
 
 ## Configuration
 
-On the prometheus settings, add the domain_exporter prober:
+On the prometheus settings, add the `domain_exporter` prober:
 
 ```yaml
 - job_name: domain
@@ -52,22 +40,49 @@ Alerting rules examples can be found on the
 [_examples](https://github.com/caarlos0/domain_exporter/tree/master/_examples)
 folder.
 
-## Building locally
+## Install
 
-Install the needed tooling and libs:
+**homebrew**:
 
-```console
-make setup
+```sh
+brew install caarlos0/tap/domain_exporter
 ```
 
-Run with:
+**docker**:
 
-```console
-go run main.go
+```sh
+docker run --rm -p 9877:9877 caarlos0/domain_exporter
 ```
 
-Run tests with:
+**apt**:
 
-```console
-make test
+```sh
+echo 'deb [trusted=yes] https://repo.caarlos0.dev/apt/ /' | sudo tee /etc/apt/sources.list.d/caarlos0.list
+sudo apt update
+sudo apt install domain_exporter
 ```
+
+**yum**:
+
+```sh
+echo '[caarlos0]
+name=caarlos0
+baseurl=https://repo.caarlos0.dev/yum/
+enabled=1
+gpgcheck=0' | sudo tee /etc/yum.repos.d/caarlos0.repo
+sudo yum install domain_exporter
+```
+
+**deb/rpm/apk**:
+
+Download the `.apk`, `.deb` or `.rpm` from the [releases page][releases] and install with the appropriate commands.
+
+**manually**:
+
+Download the pre-compiled binaries from the [releases page][releases] or clone the repo build from source.
+
+[releases]: https://github.com/caarlos0/domain_exporter/releases
+
+## Stargazers over time
+
+[![Stargazers over time](https://starchart.cc/caarlos0/domain_exporter.svg)](https://starchart.cc/caarlos0/domain_exporter)

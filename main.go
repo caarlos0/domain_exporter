@@ -22,6 +22,7 @@ import (
 var (
 	bind     = kingpin.Flag("bind", "addr to bind the server").Short('b').Default(":9222").String()
 	debug    = kingpin.Flag("debug", "show debug logs").Default("false").Bool()
+	format   = kingpin.Flag("logFormat", "log format to use").Default("console").Enum("json", "console")
 	interval = kingpin.Flag("cache", "time to cache the result of whois calls").Default("2h").Duration()
 	version  = "master"
 )
@@ -36,8 +37,10 @@ func main() {
 		urlPrefix = ""
 	}
 
-	// log.Logger = log.Output(zerolog.ConsoleWriter{Out: os.Stderr})
 	zerolog.SetGlobalLevel(zerolog.InfoLevel)
+	if *format == "console" {
+		log.Logger = log.Output(zerolog.ConsoleWriter{Out: os.Stderr})
+	}
 	if *debug {
 		zerolog.SetGlobalLevel(zerolog.DebugLevel)
 		log.Debug().Msg("enabled debug mode")

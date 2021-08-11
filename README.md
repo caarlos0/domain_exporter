@@ -51,7 +51,7 @@ brew install caarlos0/tap/domain_exporter
 **docker**:
 
 ```sh
-docker run --rm -p 9877:9877 caarlos0/domain_exporter
+docker run --rm -p 9222:9222 caarlos0/domain_exporter
 ```
 
 **apt**:

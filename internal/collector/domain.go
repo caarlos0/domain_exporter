@@ -62,7 +62,7 @@ func (c *domainCollector) Collect(ch chan<- prometheus.Metric) {
 	start := time.Now()
 	date, err := c.client.ExpireTime(c.domain)
 	if err != nil {
-		log.Err(err).Msgf("failed to probe %s", c.domain)
+		log.Error().Err(err).Msgf("failed to probe %s", c.domain)
 	}
 
 	success := err == nil

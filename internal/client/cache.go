@@ -34,6 +34,6 @@ func (c cachedClient) ExpireTime(domain string) (time.Time, error) {
 		return live, nil
 	}
 
-	log.Debug().Msgf("not caching %s because it errored: %v", domain, err)
+	log.Debug().Err(err).Msgf("not caching %s because it errored", domain)
 	return live, err
 }

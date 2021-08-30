@@ -1,33 +1,34 @@
 package client
 
 import (
+	"context"
 	"time"
 
 	cache "github.com/patrickmn/go-cache"
 	"github.com/rs/zerolog/log"
 )
 
+type cachedClient struct {
+	client Client
+	cache  *cache.Cache
+}
+
 // NewCachedClient returns a new cached client.
-func NewCachedClient(client Client, cache *cache.Cache) Client {
+func NewCachedClient(client Client, cache *cache.Cache) cachedClient {
 	return cachedClient{
 		client: client,
 		cache:  cache,
 	}
 }
 
-type cachedClient struct {
-	client Client
-	cache  *cache.Cache
-}
-
-func (c cachedClient) ExpireTime(domain string) (time.Time, error) {
+func (c cachedClient) ExpireTime(ctx context.Context, domain string) (time.Time, error) {
 	cached, found := c.cache.Get(domain)
 	if found {
 		log.Debug().Msgf("using result from cache for %s", domain)
 		return cached.(time.Time), nil
 	}
 	log.Debug().Msgf("getting live result for %s", domain)
-	live, err := c.client.ExpireTime(domain)
+	live, err := c.client.ExpireTime(ctx, domain)
 	if err == nil {
 		log.Debug().Msgf("caching result for %s", domain)
 		c.cache.Set(domain, live, cache.DefaultExpiration)

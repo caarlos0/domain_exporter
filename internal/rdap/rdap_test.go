@@ -1,6 +1,7 @@
 package rdap
 
 import (
+	"context"
 	"testing"
 	"time"
 
@@ -30,7 +31,7 @@ func TestRdapParsing(t *testing.T) {
 		tt := tt
 		t.Run(tt.domain, func(t *testing.T) {
 			t.Parallel()
-			expiry, err := NewClient().ExpireTime(tt.domain)
+			expiry, err := NewClient().ExpireTime(context.Background(), tt.domain)
 			if tt.err == "" {
 				require.NoError(t, err)
 				require.True(t, time.Since(expiry).Hours() < 0, "domain must not be expired")

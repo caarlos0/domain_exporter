@@ -19,8 +19,8 @@ func TestCollectorError(t *testing.T) {
 	multi := client.NewMultiClient(rdap.NewClient(), whois.NewClient())
 	testCollector(t, NewDomainCollector(multi, "fake.foo"), func(t *testing.T, status int, body string) {
 		require.Equal(t, 200, status)
-		require.Contains(t, body, "domain_probe_success 0")
-		require.Contains(t, body, "domain_expiry_days -1")
+		require.Contains(t, body, "domain_probe_success{domain=\"fake.foo\"} 0")
+		require.Contains(t, body, "domain_expiry_days{domain=\"fake.foo\"} -1")
 	})
 }
 
@@ -28,8 +28,8 @@ func TestNotExpired(t *testing.T) {
 	multi := client.NewMultiClient(rdap.NewClient(), whois.NewClient())
 	testCollector(t, NewDomainCollector(multi, "goreleaser.com"), func(t *testing.T, status int, body string) {
 		require.Equal(t, 200, status)
-		require.Contains(t, body, "domain_probe_success 1")
-		require.Regexp(t, regexp.MustCompile(`domain_expiry_days \d+`), body)
+		require.Contains(t, body, "domain_probe_success{domain=\"goreleaser.com\"} 1")
+		require.Regexp(t, regexp.MustCompile(`domain_expiry_days{domain=\"goreleaser.com\"} \d+`), body)
 	})
 }
 

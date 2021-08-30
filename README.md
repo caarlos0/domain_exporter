@@ -22,8 +22,6 @@ On the prometheus settings, add the `domain_exporter` prober:
   relabel_configs:
     - source_labels: [__address__]
       target_label: __param_target
-    - source_labels: [__param_target]
-      target_label: domain
     - target_label: __address__
       replacement: localhost:9222 # domain_exporter address
   static_configs:
@@ -39,6 +37,18 @@ It works more or less like prometheus's
 Alerting rules examples can be found on the
 [_examples](https://github.com/caarlos0/domain_exporter/tree/master/_examples)
 folder.
+
+You can configure `domain_exporter` to always export metrics for specific domains.
+Create configuration file:
+```yaml
+domains:
+- google.com
+- reddit.com
+```
+And pass file path as agrument to `domain_exporter`:
+```
+domain_exporter --config domains.yaml
+```
 
 ## Install
 

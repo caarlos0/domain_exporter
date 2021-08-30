@@ -1,6 +1,7 @@
 package whois
 
 import (
+	"context"
 	"fmt"
 	"regexp"
 	"strings"
@@ -59,9 +60,9 @@ func NewClient() client.Client {
 	return whoisClient{}
 }
 
-func (c whoisClient) ExpireTime(domain string) (time.Time, error) {
+func (c whoisClient) ExpireTime(ctx context.Context, domain string) (time.Time, error) {
 	log.Debug().Msgf("trying whois client for %s", domain)
-	body, err := c.request(domain, "")
+	body, err := c.request(ctx, domain, "")
 	if err != nil {
 		return time.Now(), err
 	}
@@ -79,17 +80,17 @@ func (c whoisClient) ExpireTime(domain string) (time.Time, error) {
 	return time.Now(), fmt.Errorf("could not parse date: %s", dateStr)
 }
 
-func (c whoisClient) request(domain, host string) (string, error) {
+func (c whoisClient) request(ctx context.Context, domain, host string) (string, error) {
 	req := &whois.Request{
 		Query: domain,
 		Host:  host,
 	}
 	if err := req.Prepare(); err != nil {
-		return "", err
+		return "", fmt.Errorf("failed to prepare: %w", err)
 	}
-	resp, err := whois.DefaultClient.Fetch(req)
+	resp, err := whois.DefaultClient.FetchContext(ctx, req)
 	if err != nil {
-		return "", err
+		return "", fmt.Errorf("failed to fetch whois request: %w", err)
 	}
 	body := string(resp.Body)
 
@@ -110,7 +111,7 @@ func (c whoisClient) request(domain, host string) (string, error) {
 	}
 
 	log.Debug().Msgf("found whois host %s for domain %s", foundHost, domain)
-	if newBody, err := c.request(domain, foundHost); err == nil {
+	if newBody, err := c.request(ctx, domain, foundHost); err == nil {
 		return newBody, err
 	}
 

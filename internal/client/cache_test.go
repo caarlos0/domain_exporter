@@ -1,6 +1,7 @@
 package client
 
 import (
+	"context"
 	"fmt"
 	"testing"
 	"time"
@@ -13,18 +14,19 @@ type testClient struct {
 	result *time.Time
 }
 
-func (f testClient) ExpireTime(_ string) (time.Time, error) {
+func (f testClient) ExpireTime(_ context.Context, _ string) (time.Time, error) {
 	return *f.result, nil
 }
 
 type errTestClient struct {
 }
 
-func (f errTestClient) ExpireTime(_ string) (time.Time, error) {
+func (f errTestClient) ExpireTime(_ context.Context, _ string) (time.Time, error) {
 	return time.Now(), fmt.Errorf("failed to get domain info blah")
 }
 
 func TestCachedClient(t *testing.T) {
+	ctx := context.Background()
 	cache := cache.New(1*time.Minute, 1*time.Minute)
 	expected := time.Now()
 	domain := "foo.bar"
@@ -33,7 +35,7 @@ func TestCachedClient(t *testing.T) {
 
 	// test getting from out fake client
 	t.Run("get fresh", func(t *testing.T) {
-		res, err := cli.ExpireTime(domain)
+		res, err := cli.ExpireTime(ctx, domain)
 		require.NoError(t, err)
 		require.Equal(t, expected, res)
 	})
@@ -43,7 +45,7 @@ func TestCachedClient(t *testing.T) {
 	t.Run("get from cache", func(t *testing.T) {
 		oldExpected := expected
 		expected = time.Now()
-		res, err := cli.ExpireTime(domain)
+		res, err := cli.ExpireTime(ctx, domain)
 		require.NoError(t, err)
 		require.Equal(t, oldExpected, res)
 	})
@@ -52,7 +54,7 @@ func TestCachedClient(t *testing.T) {
 	// from the fake client
 	t.Run("flush cache", func(t *testing.T) {
 		cache.Flush()
-		res, err := cli.ExpireTime(domain)
+		res, err := cli.ExpireTime(ctx, domain)
 		require.NoError(t, err)
 		require.Equal(t, expected, res)
 	})
@@ -61,9 +63,9 @@ func TestCachedClient(t *testing.T) {
 		cache.Flush()
 
 		cli := NewCachedClient(errTestClient{}, cache)
-		_, err := cli.ExpireTime(domain)
+		_, err := cli.ExpireTime(ctx, domain)
 		require.Error(t, err)
-		_, err = cli.ExpireTime(domain)
+		_, err = cli.ExpireTime(ctx, domain)
 		require.Error(t, err)
 		cached, got := cache.Get(domain)
 		require.Nil(t, cached)

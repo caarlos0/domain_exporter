@@ -1,6 +1,7 @@
 package collector
 
 import (
+	"context"
 	"math"
 	"sync"
 	"time"
@@ -11,9 +12,10 @@ import (
 )
 
 type domainCollector struct {
-	mutex  sync.Mutex
-	client client.Client
-	domain string
+	mutex   sync.Mutex
+	client  client.Client
+	domains []string
+	timeout time.Duration
 
 	expiryDays    *prometheus.Desc
 	probeSuccess  *prometheus.Desc
@@ -21,28 +23,29 @@ type domainCollector struct {
 }
 
 // NewDomainCollector returns a domain collector.
-func NewDomainCollector(client client.Client, domain string) prometheus.Collector {
+func NewDomainCollector(client client.Client, domains ...string) prometheus.Collector {
 	const namespace = "domain"
 	const subsystem = ""
 	return &domainCollector{
-		client: client,
-		domain: domain,
+		client:  client,
+		domains: domains,
+		timeout: time.Second * 10,
 		expiryDays: prometheus.NewDesc(
 			prometheus.BuildFQName(namespace, subsystem, "expiry_days"),
 			"time in days until the domain expires",
-			nil,
+			[]string{"domain"},
 			nil,
 		),
 		probeSuccess: prometheus.NewDesc(
 			prometheus.BuildFQName(namespace, subsystem, "probe_success"),
 			"wether the probe was successful or not",
-			nil,
+			[]string{"domain"},
 			nil,
 		),
 		probeDuration: prometheus.NewDesc(
 			prometheus.BuildFQName(namespace, subsystem, "probe_duration_seconds"),
 			"returns how long the probe took to complete in seconds",
-			nil,
+			[]string{"domain"},
 			nil,
 		),
 	}
@@ -59,28 +62,37 @@ func (c *domainCollector) Describe(ch chan<- *prometheus.Desc) {
 func (c *domainCollector) Collect(ch chan<- prometheus.Metric) {
 	c.mutex.Lock()
 	defer c.mutex.Unlock()
-	start := time.Now()
-	date, err := c.client.ExpireTime(c.domain)
-	if err != nil {
-		log.Error().Err(err).Msgf("failed to probe %s", c.domain)
-	}
 
-	success := err == nil
-	ch <- prometheus.MustNewConstMetric(
-		c.probeSuccess,
-		prometheus.GaugeValue,
-		boolToFloat(success),
-	)
-	ch <- prometheus.MustNewConstMetric(
-		c.expiryDays,
-		prometheus.GaugeValue,
-		math.Floor(time.Until(date).Hours()/24),
-	)
-	ch <- prometheus.MustNewConstMetric(
-		c.probeDuration,
-		prometheus.GaugeValue,
-		time.Since(start).Seconds(),
-	)
+	ctx, cancel := context.WithTimeout(context.Background(), c.timeout)
+	defer cancel()
+
+	for _, domain := range c.domains {
+		start := time.Now()
+		date, err := c.client.ExpireTime(ctx, domain)
+		if err != nil {
+			log.Error().Err(err).Msgf("failed to probe %s", domain)
+		}
+
+		success := err == nil
+		ch <- prometheus.MustNewConstMetric(
+			c.probeSuccess,
+			prometheus.GaugeValue,
+			boolToFloat(success),
+			domain,
+		)
+		ch <- prometheus.MustNewConstMetric(
+			c.expiryDays,
+			prometheus.GaugeValue,
+			math.Floor(time.Until(date).Hours()/24),
+			domain,
+		)
+		ch <- prometheus.MustNewConstMetric(
+			c.probeDuration,
+			prometheus.GaugeValue,
+			time.Since(start).Seconds(),
+			domain,
+		)
+	}
 }
 
 func boolToFloat(b bool) float64 {

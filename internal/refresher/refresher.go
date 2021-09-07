@@ -8,28 +8,31 @@ import (
 	"github.com/rs/zerolog/log"
 )
 
-type refresher struct {
-	interval time.Duration
-	client   client.Client
-	domains  []string
+type Refresher struct {
+	ticker  *time.Ticker
+	client  client.Client
+	domains []string
 }
 
-func New(interval time.Duration, client client.Client, domains ...string) refresher {
-	return refresher{
-		interval: interval,
-		client:   client,
-		domains:  domains,
+func New(interval time.Duration, client client.Client, domains ...string) Refresher {
+	ticker := time.NewTicker(interval)
+	return Refresher{
+		ticker:  ticker,
+		client:  client,
+		domains: domains,
 	}
 }
 
-func (r refresher) Run(ctx context.Context) {
-	log.Info().Msg("run refresher")
+func (r Refresher) Stop() {
+	r.ticker.Stop()
+}
 
-	ticker := time.NewTicker(r.interval)
+func (r Refresher) Run(ctx context.Context) {
+	log.Info().Msg("run refresher")
 	r.Refresh(ctx)
 
 	select {
-	case <-ticker.C:
+	case <-r.ticker.C:
 		r.Refresh(ctx)
 	case <-ctx.Done():
 		log.Info().Msg("refresher is finished")
@@ -37,7 +40,7 @@ func (r refresher) Run(ctx context.Context) {
 	}
 }
 
-func (r refresher) Refresh(ctx context.Context) {
+func (r Refresher) Refresh(ctx context.Context) {
 	ctx, cancel := context.WithTimeout(ctx, time.Second*10)
 	defer cancel()
 

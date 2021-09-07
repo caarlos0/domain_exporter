@@ -14,7 +14,7 @@ type cachedClient struct {
 }
 
 // NewCachedClient returns a new cached client.
-func NewCachedClient(client Client, cache *cache.Cache) cachedClient {
+func NewCachedClient(client Client, cache *cache.Cache) Client {
 	return cachedClient{
 		client: client,
 		cache:  cache,

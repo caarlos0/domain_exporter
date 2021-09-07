@@ -74,7 +74,9 @@ func main() {
 		wg.Add(1)
 		go func() {
 			defer wg.Done()
-			refresher.New(*interval, cachedClient, cfg.Domains...).Run(ctx)
+			fresh := refresher.New(*interval, cachedClient, cfg.Domains...)
+			defer fresh.Stop()
+			fresh.Run(ctx)
 		}()
 
 		domainCollector := collector.NewDomainCollector(cachedClient, cfg.Domains...)

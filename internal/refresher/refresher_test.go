@@ -24,7 +24,7 @@ func (fakeFail) ExpireTime(ctx context.Context, domain string) (time.Time, error
 func Test_refresher_Refresh(t *testing.T) {
 	tests := []struct {
 		name      string
-		refresher refresher
+		refresher Refresher
 	}{
 		{
 			name:      "refresh is ok",
@@ -38,6 +38,7 @@ func Test_refresher_Refresh(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			tt.refresher.Refresh(context.Background())
+			defer tt.refresher.Stop()
 		})
 	}
 }

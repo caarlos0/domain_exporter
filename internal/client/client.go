@@ -1,8 +1,11 @@
 package client
 
-import "time"
+import (
+	"context"
+	"time"
+)
 
 // Client is a DNS client impl.
 type Client interface {
-	ExpireTime(domain string) (time.Time, error)
+	ExpireTime(ctx context.Context, domain string) (time.Time, error)
 }

@@ -1,6 +1,7 @@
 package rdap
 
 import (
+	"context"
 	"fmt"
 	"time"
 
@@ -48,13 +49,25 @@ func NewClient() client.Client {
 	return rdapClient{}
 }
 
-func (rdapClient) ExpireTime(domain string) (time.Time, error) {
+func (rdapClient) ExpireTime(ctx context.Context, domain string) (time.Time, error) {
 	log.Debug().Msgf("trying rdap client for %s", domain)
-	client := &rdap.Client{}
-	body, err := client.QueryDomain(domain)
-	if err != nil {
-		return time.Now(), err
+	req := &rdap.Request{
+		Type:  rdap.DomainRequest,
+		Query: domain,
 	}
+	req = req.WithContext(ctx)
+
+	client := &rdap.Client{}
+	resp, err := client.Do(req)
+	if err != nil {
+		return time.Now(), fmt.Errorf("failed to do rdap request: %w", err)
+	}
+
+	body, ok := resp.Object.(*rdap.Domain)
+	if !ok {
+		return time.Now(), fmt.Errorf("failed to cast rdap domain object: %w", err)
+	}
+
 	for _, event := range body.Events {
 		if event.Action == "expiration" {
 			for _, format := range formats {

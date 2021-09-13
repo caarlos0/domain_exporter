@@ -10,6 +10,7 @@ import (
 	"github.com/caarlos0/domain_exporter/internal/client"
 	"github.com/domainr/whois"
 	"github.com/rs/zerolog/log"
+	"golang.org/x/net/idna"
 )
 
 // nolint: gochecknoglobals
@@ -81,8 +82,15 @@ func (c whoisClient) ExpireTime(ctx context.Context, domain string) (time.Time, 
 }
 
 func (c whoisClient) request(ctx context.Context, domain, host string) (string, error) {
+	normalizedDomain := strings.ToLower(domain)
+
+	normalizedDomain, err := idna.ToASCII(normalizedDomain)
+	if err != nil {
+		return "", fmt.Errorf("failed to normalize domain name: %w", err)
+	}
+
 	req := &whois.Request{
-		Query: domain,
+		Query: normalizedDomain,
 		Host:  host,
 	}
 	if err := req.Prepare(); err != nil {

@@ -24,7 +24,7 @@ func TestWhoisParsing(t *testing.T) {
 		{domain: "bbc.co.uk", err: ""},
 		{domain: "google.sk", err: ""},
 		{domain: "google.ro", err: ""},
-		// {domain: "google.pt", err: ""}, // timeouts all the time
+		{domain: "google.pt", err: "i/o timeout"},
 		{domain: "google.it", err: ""},
 		{domain: "watchub.pw", err: ""},
 		{domain: "google.co.id", err: ""},
@@ -32,11 +32,17 @@ func TestWhoisParsing(t *testing.T) {
 		{domain: "google.jp", err: ""},
 		{domain: "microsoft.im", err: ""},
 		{domain: "google.rs", err: ""},
+		{domain: "мвд.рф", err: ""},
+		{domain: "МВД.РФ", err: ""},
+		{domain: "GOOGLE.RS", err: ""},
 	} {
 		tt := tt
 		t.Run(tt.domain, func(t *testing.T) {
 			t.Parallel()
-			expiry, err := NewClient().ExpireTime(context.Background(), tt.domain)
+			ctx, cancel := context.WithTimeout(context.Background(), time.Second)
+			defer cancel()
+
+			expiry, err := NewClient().ExpireTime(ctx, tt.domain)
 			if tt.err == "" {
 				require.NoError(t, err)
 				require.True(t, time.Since(expiry).Hours() < 0, "domain must not be expired")

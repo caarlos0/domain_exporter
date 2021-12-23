@@ -11,7 +11,7 @@ require (
 	github.com/rs/zerolog v1.26.0
 	github.com/stretchr/testify v1.7.0
 	golang.org/x/net v0.0.0-20210805182204-aaa1db679c0d
-	gopkg.in/yaml.v2 v2.4.0
+	gopkg.in/yaml.v3 v3.0.0-20200313102051-9f266ea9e77c
 )
 
 require (
@@ -36,5 +36,4 @@ require (
 	golang.org/x/text v0.3.6 // indirect
 	google.golang.org/protobuf v1.26.0-rc.1 // indirect
 	gopkg.in/alecthomas/kingpin.v2 v2.2.6 // indirect
-	gopkg.in/yaml.v3 v3.0.0-20200313102051-9f266ea9e77c // indirect
 )

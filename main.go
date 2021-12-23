@@ -32,7 +32,7 @@ var (
 	format     = kingpin.Flag("logFormat", "log format to use").Default("console").Enum("json", "console")
 	interval   = kingpin.Flag("cache", "time to cache the result of whois calls").Default("2h").Duration()
 	configFile = kingpin.Flag("config", "configuration file").String()
-	version    = "master"
+	version    = "dev"
 )
 
 func main() {

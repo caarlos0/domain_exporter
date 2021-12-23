@@ -7,6 +7,8 @@ on:
 
 permissions:
   contents: write
+  id-token: write
+  packages: write
 
 jobs:
   goreleaser:
@@ -14,30 +16,25 @@ jobs:
     env:
       DOCKER_CLI_EXPERIMENTAL: "enabled"
     steps:
-      - name: Checkout
-        uses: actions/checkout@v2
+      - uses: actions/checkout@v2
         with:
           fetch-depth: 0
-      - name: Set up Go
-        uses: actions/setup-go@v2
+      - uses: actions/setup-go@v2
         with:
           go-version: ~1.17
-      - name: Set up QEMU
-        uses: docker/setup-qemu-action@v1
-      - name: Log in to docker.io
-        uses: docker/login-action@v1
+      - uses: docker/setup-qemu-action@v1
+      - uses: docker/login-action@v1
         with:
           username: caarlos0
           password: ${{ secrets.DOCKER_PASSWORD }}
-      - name: Log in to ghcr.io
-        uses: docker/login-action@v1
+      - uses: docker/login-action@v1
         with:
           username: ${{ github.repository_owner }}
           password: ${{ secrets.GH_PAT }}
           registry: ghcr.io
-      - uses: sigstore/cosign-installer@v1.1.0
-      - name: Run GoReleaser
-        uses: goreleaser/goreleaser-action@v2
+      - uses: sigstore/cosign-installer@v1.4.1
+      - uses: anchore/sbom-action/download-syft@v0.6.0
+      - uses: goreleaser/goreleaser-action@v2
         with:
           distribution: goreleaser-pro
           version: latest
@@ -50,4 +47,3 @@ jobs:
           TWITTER_CONSUMER_SECRET: ${{ secrets.TWITTER_CONSUMER_SECRET }}
           TWITTER_ACCESS_TOKEN: ${{ secrets.TWITTER_ACCESS_TOKEN }}
           TWITTER_ACCESS_TOKEN_SECRET: ${{ secrets.TWITTER_ACCESS_TOKEN_SECRET }}
-          COSIGN_PWD: ${{ secrets.COSIGN_PWD }}

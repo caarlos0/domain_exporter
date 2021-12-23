@@ -35,7 +35,7 @@ It works more or less like prometheus's
 [blackbox_exporter](https://github.com/prometheus/blackbox_exporter).
 
 Alerting rules examples can be found on the
-[_examples](https://github.com/caarlos0/domain_exporter/tree/master/_examples)
+[_examples](https://github.com/caarlos0/domain_exporter/tree/main/_examples)
 folder.
 
 You can configure `domain_exporter` to always export metrics for specific domains.

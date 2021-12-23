@@ -4,7 +4,6 @@ on:
     tags:
       - v*
     branches:
-      - master
       - main
   pull_request:
 jobs:
@@ -16,7 +15,6 @@ jobs:
         with:
           go-version: ~1.17
       - uses: actions/checkout@v2
-      - name: golangci-lint
-        uses: golangci/golangci-lint-action@v2
+      - uses: golangci/golangci-lint-action@v2
         with:
           skip-go-installation: true

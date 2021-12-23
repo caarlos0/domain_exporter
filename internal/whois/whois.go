@@ -64,23 +64,23 @@ func NewClient() client.Client {
 }
 
 func (c whoisClient) ExpireTime(ctx context.Context, domain string) (time.Time, error) {
-	log.Debug().Msgf("trying whois client for %s", domain)
+	log.Debug().Msgf("trying whois client for %q", domain)
 	body, err := c.request(ctx, domain, "")
 	if err != nil {
 		return time.Now(), err
 	}
 	result := expiryRE.FindStringSubmatch(body)
 	if len(result) < 2 {
-		return time.Now(), fmt.Errorf("could not parse whois response: %s", body)
+		return time.Now(), fmt.Errorf("could not parse whois response: %q", body)
 	}
 	dateStr := strings.TrimSpace(result[2])
 	for _, format := range formats {
 		if date, err := time.Parse(format, dateStr); err == nil {
-			log.Debug().Msgf("domain %s will expire at %s", domain, date.String())
+			log.Debug().Msgf("domain %q will expire at %q", domain, date.String())
 			return date, nil
 		}
 	}
-	return time.Now(), fmt.Errorf("could not parse date: %s", dateStr)
+	return time.Now(), fmt.Errorf("could not parse date: %q", dateStr)
 }
 
 func (c whoisClient) request(ctx context.Context, domain, host string) (string, error) {

@@ -18,7 +18,7 @@ jobs:
       - uses: actions/setup-go@v2
         with:
           go-version: ~1.17
-      - uses: actions/cache@v1
+      - uses: actions/cache@v
         with:
           path: ~/go/pkg/mod
           key: ${{ runner.os }}-go-${{ hashFiles('**/go.sum') }}
@@ -27,6 +27,6 @@ jobs:
       - run: make setup
       - run: make test
       - run: git diff
-      - uses: codecov/codecov-action@v1
+      - uses: codecov/codecov-action@v2
         with:
           file: ./coverage.txt

@@ -49,10 +49,11 @@ var (
 		"02/01/2006 15:04:05",         // .im
 		"02.01.2006 15:04:05",         // .rs
 		"01 Jan 2006",                 // .co.th
+		"2.1.2006 15:04:05",           // .fi
 	}
 
 	// nolint: lll
-	expiryRE    = regexp.MustCompile(`(?i)(Registrar Registration Expiration Date|expire-date|Valid Until|Expire Date|Registry Expiry Date|paid-till|Expiration Date|Expiration Time|Expiry date|Expiry|Expires On|expires|Expires|expire|Renewal Date|Record expires on|Exp date)\]?:?\s?(.*)`)
+	expiryRE    = regexp.MustCompile(`(?i)(Registrar Registration Expiration Date|expire-date|Valid Until|Expire Date|Registry Expiry Date|paid-till|Expiration Date|Expiration Time|Expiry date|Expiry|Expires On|expires\.{12}|expires|Expires|expire|Renewal Date|Record expires on|Exp date)\]?:?\s?(.*)`)
 	registrarRE = regexp.MustCompile(`(?i)Registrar WHOIS Server: (.*)`)
 )
 

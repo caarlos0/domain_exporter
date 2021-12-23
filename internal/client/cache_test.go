@@ -6,8 +6,8 @@ import (
 	"testing"
 	"time"
 
+	"github.com/matryer/is"
 	cache "github.com/patrickmn/go-cache"
-	"github.com/stretchr/testify/require"
 )
 
 type testClient struct {
@@ -36,8 +36,9 @@ func TestCachedClient(t *testing.T) {
 	// test getting from out fake client
 	t.Run("get fresh", func(t *testing.T) {
 		res, err := cli.ExpireTime(ctx, domain)
-		require.NoError(t, err)
-		require.Equal(t, expected, res)
+		is := is.New(t)
+		is.NoErr(err)           // expected an error
+		is.Equal(expected, res) // expected the same result
 	})
 
 	// here we change the inner fake client result, but the result
@@ -46,8 +47,9 @@ func TestCachedClient(t *testing.T) {
 		oldExpected := expected
 		expected = time.Now()
 		res, err := cli.ExpireTime(ctx, domain)
-		require.NoError(t, err)
-		require.Equal(t, oldExpected, res)
+		is := is.New(t)
+		is.NoErr(err)              // expected an error
+		is.Equal(oldExpected, res) // expected the same result
 	})
 
 	// here we flush the cache and verify that the result is the one
@@ -55,20 +57,24 @@ func TestCachedClient(t *testing.T) {
 	t.Run("flush cache", func(t *testing.T) {
 		cache.Flush()
 		res, err := cli.ExpireTime(ctx, domain)
-		require.NoError(t, err)
-		require.Equal(t, expected, res)
+		is := is.New(t)
+		is.NoErr(err)           // expected an error
+		is.Equal(expected, res) // expected the same result
 	})
 
 	t.Run("do not cache errors", func(t *testing.T) {
 		cache.Flush()
+		is := is.New(t)
 
 		cli := NewCachedClient(errTestClient{}, cache)
 		_, err := cli.ExpireTime(ctx, domain)
-		require.Error(t, err)
+		is.True(err != nil) // expected an error
+
 		_, err = cli.ExpireTime(ctx, domain)
-		require.Error(t, err)
+		is.True(err != nil) // expected an error
+
 		cached, got := cache.Get(domain)
-		require.Nil(t, cached)
-		require.False(t, got)
+		is.True(cached == nil) // expected a nil result
+		is.Equal(got, false)   // expect it not to get from cache
 	})
 }

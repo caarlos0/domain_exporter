@@ -2,10 +2,11 @@ package rdap
 
 import (
 	"context"
+	"strings"
 	"testing"
 	"time"
 
-	"github.com/stretchr/testify/require"
+	"github.com/matryer/is"
 )
 
 func TestRdapParsing(t *testing.T) {
@@ -31,13 +32,14 @@ func TestRdapParsing(t *testing.T) {
 		tt := tt
 		t.Run(tt.domain, func(t *testing.T) {
 			t.Parallel()
+			is := is.New(t)
 			expiry, err := NewClient().ExpireTime(context.Background(), tt.domain)
 			if tt.err == "" {
-				require.NoError(t, err)
-				require.True(t, time.Since(expiry).Hours() < 0, "domain must not be expired")
+				is.NoErr(err)                           // should not err
+				is.True(time.Since(expiry).Hours() < 0) // domain must not be expired
 			} else {
-				require.Error(t, err)
-				require.Contains(t, err.Error(), tt.err)
+				is.True(err != nil)                            // should have errored
+				is.True(strings.Contains(err.Error(), tt.err)) // should have error message
 			}
 		})
 	}

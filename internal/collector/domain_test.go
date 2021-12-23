@@ -5,35 +5,39 @@ import (
 	"net/http"
 	"net/http/httptest"
 	"regexp"
+	"strings"
 	"testing"
 
 	"github.com/caarlos0/domain_exporter/internal/client"
 	"github.com/caarlos0/domain_exporter/internal/rdap"
 	"github.com/caarlos0/domain_exporter/internal/whois"
+	"github.com/matryer/is"
 	"github.com/prometheus/client_golang/prometheus"
 	"github.com/prometheus/client_golang/prometheus/promhttp"
-	"github.com/stretchr/testify/require"
 )
 
 func TestCollectorError(t *testing.T) {
+	is := is.New(t)
 	multi := client.NewMultiClient(rdap.NewClient(), whois.NewClient())
 	testCollector(t, NewDomainCollector(multi, "fake.foo"), func(t *testing.T, status int, body string) {
-		require.Equal(t, 200, status)
-		require.Contains(t, body, "domain_probe_success{domain=\"fake.foo\"} 0")
-		require.Contains(t, body, "domain_expiry_days{domain=\"fake.foo\"} -1")
+		is.Equal(200, status)                                                          // request should succeed
+		is.True(strings.Contains(body, "domain_probe_success{domain=\"fake.foo\"} 0")) // probe should succeed
+		is.True(strings.Contains(body, "domain_expiry_days{domain=\"fake.foo\"} -1"))  // should contain domain expiry
 	})
 }
 
 func TestNotExpired(t *testing.T) {
+	is := is.New(t)
 	multi := client.NewMultiClient(rdap.NewClient(), whois.NewClient())
 	testCollector(t, NewDomainCollector(multi, "goreleaser.com"), func(t *testing.T, status int, body string) {
-		require.Equal(t, 200, status)
-		require.Contains(t, body, "domain_probe_success{domain=\"goreleaser.com\"} 1")
-		require.Regexp(t, regexp.MustCompile(`domain_expiry_days{domain=\"goreleaser.com\"} \d+`), body)
+		is.Equal(200, status)                                                                                   // srequest hould succeed
+		is.True(strings.Contains(body, "domain_probe_success{domain=\"goreleaser.com\"} 1"))                    // probe should succeed
+		is.True(regexp.MustCompile(`domain_expiry_days{domain=\"goreleaser.com\"} \d+`).FindString(body) != "") // should contain domain expiry
 	})
 }
 
 func testCollector(t *testing.T, collector prometheus.Collector, checker func(t *testing.T, status int, body string)) {
+	is := is.New(t)
 	registry := prometheus.NewRegistry()
 	registry.MustRegister(collector)
 
@@ -41,8 +45,8 @@ func testCollector(t *testing.T, collector prometheus.Collector, checker func(t 
 	defer srv.Close()
 
 	resp, err := http.Get(srv.URL)
-	require.NoError(t, err)
+	is.NoErr(err) // expected no error
 	body, err := ioutil.ReadAll(resp.Body)
-	require.NoError(t, err)
+	is.NoErr(err) // expected no error
 	checker(t, resp.StatusCode, string(body))
 }

@@ -52,7 +52,25 @@ var (
 	}
 
 	// nolint: lll
-	expiryRE    = regexp.MustCompile(`(?i)(Registrar Registration Expiration Date|expire-date|Valid Until|Expire Date|Registry Expiry Date|paid-till|Expiration Date|Expiration Time|Expiry date|Expiry|Expires On|expires|Expires|expire|Renewal Date|Record expires on|Exp date)\]?:?\s?(.*)`)
+	expiryRE = regexp.MustCompile(`(?i)(` + strings.Join([]string{
+		"Registrar Registration Expiration Date",
+		"expire-date",
+		"Valid Until",
+		"Expire Date",
+		"Registry Expiry Date",
+		"paid-till",
+		"Expiration Date",
+		"Expiration Time",
+		"Expiry date",
+		"Expiry",
+		"Expires On",
+		"expires",
+		"Expires",
+		"expire",
+		"Renewal Date",
+		"Record expires on",
+		"Exp date",
+	}, "|") + `)\]?:?\s?(.*)`)
 	registrarRE = regexp.MustCompile(`(?i)Registrar WHOIS Server: (.*)`)
 )
 

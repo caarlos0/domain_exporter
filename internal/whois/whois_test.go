@@ -15,8 +15,8 @@ func TestWhoisParsing(t *testing.T) {
 		err    string
 	}{
 		{domain: "google.ai", err: "could not parse whois response"},
-		{domain: "domreg.lt", err: ""},
-		{domain: "fakedomain.foo", err: "could not parse whois response: Domain not found"},
+		{domain: "google.lt", err: ""},
+		{domain: "fakedomain.foo", err: "Domain not found"},
 		{domain: "google.cn", err: ""},
 		{domain: "google.com", err: ""},
 		{domain: "google.de", err: "could not parse whois response"},
@@ -44,7 +44,7 @@ func TestWhoisParsing(t *testing.T) {
 			t.Parallel()
 			is := is.New(t)
 
-			ctx, cancel := context.WithTimeout(context.Background(), time.Minute)
+			ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
 			t.Cleanup(cancel)
 
 			expiry, err := NewClient().ExpireTime(ctx, tt.domain)
@@ -52,7 +52,8 @@ func TestWhoisParsing(t *testing.T) {
 				is.NoErr(err)                           // expected no errors
 				is.True(time.Since(expiry).Hours() < 0) // domain must not be expired
 			} else {
-				is.True(err != nil)                            // expected an error
+				is.True(err != nil) // expected an error
+				t.Log(err)
 				is.True(strings.Contains(err.Error(), tt.err)) // expected error to contain message
 			}
 		})

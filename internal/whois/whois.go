@@ -49,6 +49,7 @@ var (
 		"02/01/2006 15:04:05",         // .im
 		"02.01.2006 15:04:05",         // .rs
 		"02 Jan 2006",                 // .co.th
+		"2.1.2006 15:04:05",           // .fi
 	}
 
 	// nolint: lll
@@ -64,6 +65,7 @@ var (
 		"Expiry date",
 		"Expiry",
 		"Expires On",
+		"expires\\.{12}",
 		"expires",
 		"Expires",
 		"expire",

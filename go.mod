@@ -8,7 +8,7 @@ require (
 	github.com/matryer/is v1.4.0
 	github.com/openrdap/rdap v0.9.1-0.20191017185644-af93e7ef17b7
 	github.com/patrickmn/go-cache v2.1.0+incompatible
-	github.com/prometheus/client_golang v1.11.0
+	github.com/prometheus/client_golang v1.12.1
 	github.com/rs/zerolog v1.26.1
 	golang.org/x/net v0.0.0-20211216030914-fe4d6282115f
 	gopkg.in/yaml.v3 v3.0.0-20210107192922-496545a6307b
@@ -31,7 +31,7 @@ require (
 	github.com/stretchr/testify v1.7.0 // indirect
 	github.com/zonedb/zonedb v1.0.3487 // indirect
 	golang.org/x/crypto v0.0.0-20211215165025-cf75a172585e // indirect
-	golang.org/x/sys v0.0.0-20211216021012-1d35b9e2eb4e // indirect
+	golang.org/x/sys v0.0.0-20220114195835-da31bd327af9 // indirect
 	golang.org/x/text v0.3.7 // indirect
 	google.golang.org/protobuf v1.27.1 // indirect
 	gopkg.in/alecthomas/kingpin.v2 v2.2.6 // indirect

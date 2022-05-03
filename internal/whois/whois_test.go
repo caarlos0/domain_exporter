@@ -38,6 +38,9 @@ func TestWhoisParsing(t *testing.T) {
 		{domain: "GOOGLE.RS", err: ""},
 		{domain: "google.co.th", err: ""},
 		{domain: "google.fi", err: ""},
+		{domain: "fakedomain.me", err: "NOT FOUND"},
+		{domain: "fakedomain.best", err: "The queried object does not exist: DOMAIN NOT FOUND"},
+		{domain: "fakedomain.icu", err: "The queried object does not exist: DOMAIN NOT FOUND"}
 	} {
 		tt := tt
 		t.Run(tt.domain, func(t *testing.T) {

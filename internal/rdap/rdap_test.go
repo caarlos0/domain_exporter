@@ -28,6 +28,7 @@ func TestRdapParsing(t *testing.T) {
 		{domain: "watchub.pw", err: ""},
 		{domain: "google.co.id", err: ""},
 		{domain: "google.kr", err: "No RDAP servers found for 'google.kr'"},
+		{domain: "google.host", err: ""},
 	} {
 		tt := tt
 		t.Run(tt.domain, func(t *testing.T) {

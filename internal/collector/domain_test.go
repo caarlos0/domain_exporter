@@ -1,7 +1,7 @@
 package collector
 
 import (
-	"io/ioutil"
+	"io"
 	"net/http"
 	"net/http/httptest"
 	"regexp"
@@ -46,7 +46,7 @@ func testCollector(t *testing.T, collector prometheus.Collector, checker func(t 
 
 	resp, err := http.Get(srv.URL)
 	is.NoErr(err) // expected no error
-	body, err := ioutil.ReadAll(resp.Body)
+	body, err := io.ReadAll(resp.Body)
 	is.NoErr(err) // expected no error
 	checker(t, resp.StatusCode, string(body))
 }

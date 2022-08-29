@@ -2,7 +2,7 @@ package safeconfig
 
 import (
 	"fmt"
-	"io/ioutil"
+	"os"
 	"path/filepath"
 
 	"github.com/rs/zerolog/log"
@@ -35,7 +35,7 @@ func (cfg *SafeConfig) Reload(pathToFile string) error {
 	}
 	log.Debug().Msgf("absolute path of config file is %s", filename)
 
-	yamlFile, err := ioutil.ReadFile(filename)
+	yamlFile, err := os.ReadFile(filename)
 	if err != nil {
 		return fmt.Errorf("failed to read file: %w", err)
 	}

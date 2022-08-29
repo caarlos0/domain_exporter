@@ -1,7 +1,6 @@
 package safeconfig
 
 import (
-	"io/ioutil"
 	"os"
 	"reflect"
 	"testing"
@@ -82,7 +81,7 @@ domains:
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			file, err := ioutil.TempFile(os.TempDir(), "temp.*.yaml")
+			file, err := os.CreateTemp(os.TempDir(), "temp.*.yaml")
 			if err != nil {
 				log.Fatal().Err(err)
 			}

@@ -22,7 +22,7 @@ func TestRdapParsing(t *testing.T) {
 		{domain: "google.de", err: "No RDAP servers found for 'google.de'"},
 		{domain: "nic.ua", err: "No RDAP servers found for 'nic.ua'"},
 		{domain: "taiwannews.com.tw", err: "No RDAP servers found for 'taiwannews.com.tw'"},
-		{domain: "bbc.co.uk", err: "No RDAP servers found for 'bbc.co.uk'"},
+		// {domain: "bbc.co.uk", err: "No RDAP servers found for 'bbc.co.uk'"},
 		{domain: "google.sg", err: "No RDAP servers found for 'google.sg'"},
 		{domain: "google.sk", err: "No RDAP servers found for 'google.sk'"},
 		{domain: "google.ro", err: "No RDAP servers found for 'google.ro'"},

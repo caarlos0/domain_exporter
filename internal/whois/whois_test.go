@@ -28,7 +28,7 @@ func TestWhoisParsing(t *testing.T) {
 		{domain: "google.ro", err: ""},
 		{domain: "google.pt", err: "i/o timeout"},
 		{domain: "google.it", err: ""},
-		{domain: "watchub.pw", err: ""},
+		{domain: "google.pw", err: ""},
 		{domain: "google.co.id", err: ""},
 		{domain: "google.kr", err: ""},
 		{domain: "google.jp", err: ""},
@@ -54,9 +54,9 @@ func TestWhoisParsing(t *testing.T) {
 				is.NoErr(err)                           // expected no errors
 				is.True(time.Since(expiry).Hours() < 0) // domain must not be expired
 			} else {
-				is.True(err != nil) // expected an error
-				t.Log(err)
+				is.True(err != nil)                            // expected an error
 				is.True(strings.Contains(err.Error(), tt.err)) // expected error to contain message
+				t.Log(err)
 			}
 		})
 	}

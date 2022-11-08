@@ -26,7 +26,7 @@ func TestRdapParsing(t *testing.T) {
 		{domain: "google.sg", err: "No RDAP servers found for 'google.sg'"},
 		{domain: "google.sk", err: "No RDAP servers found for 'google.sk'"},
 		{domain: "google.ro", err: "No RDAP servers found for 'google.ro'"},
-		{domain: "watchub.pw", err: ""},
+		{domain: "google.pw", err: ""},
 		{domain: "google.co.id", err: ""},
 		{domain: "google.kr", err: "No RDAP servers found for 'google.kr'"},
 		{domain: "google.host", err: ""},

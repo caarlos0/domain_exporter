@@ -27,8 +27,16 @@ spec:
       serviceAccountName: {{ include "helm-charts.serviceAccountName" . }}
       securityContext:
         {{- toYaml .Values.podSecurityContext | nindent 8 }}
+      volumes:
+        - name: config
+          configMap:
+            name: {{ .Chart.Name }}-config.yaml
       containers:
         - name: {{ .Chart.Name }}
+          command: ["/usr/bin/domain_exporter"]
+          args:
+            - "--config"
+            - "/opt/domain_exporter/etc/{{ .Chart.Name }}-config.yaml"
           securityContext:
             {{- toYaml .Values.securityContext | nindent 12 }}
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
@@ -47,6 +55,9 @@ spec:
               port: http
           resources:
             {{- toYaml .Values.resources | nindent 12 }}
+          volumeMounts:
+            - name: {{ .Chart.Name }}-config.yaml
+              mountPath: /opt/domain_exporter/etc
       {{- with .Values.nodeSelector }}
       nodeSelector:
         {{- toYaml . | nindent 8 }}

@@ -6,7 +6,7 @@ metadata:
     {{- include "helm-charts.labels" . | nindent 4 }}
 data:
   domains.yaml: |-
-{{- if .Values.configmap }}
+{{- if .Values.domains }}
     # User-supplied configuration:
-{{ tpl .Values.configmap . | indent 4 }}
+{{ tpl .Values.domains . | indent 4 }}
 {{- end }}

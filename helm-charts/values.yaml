@@ -1,7 +1,3 @@
-configmap: |-
-  domains:
-  - google.com
-
 # Default values for helm-charts.
 # This is a YAML-formatted file.
 # Declare variables to be passed into your templates.
@@ -85,3 +81,7 @@ nodeSelector: {}
 tolerations: []
 
 affinity: {}
+
+# domain_exporter configuration
+domains:
+- google.com

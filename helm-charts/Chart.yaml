@@ -1,6 +1,6 @@
 apiVersion: v2
-name: helm-charts
-description: A Helm chart for Kubernetes
+name: domain_exporter
+description: A Helm chart for domain_exporter
 
 # A chart can be either an 'application' or a 'library' chart.
 #

@@ -83,5 +83,6 @@ tolerations: []
 affinity: {}
 
 # domain_exporter configuration
-domains:
-- google.com
+config: |-
+  domains:
+  - google.com

@@ -4,9 +4,8 @@ metadata:
   name: {{ include "helm-charts.fullname" . }}
   labels:
     {{- include "helm-charts.labels" . | nindent 4 }}
-data:
-  domains.yaml: |-
-{{- if .Values.domains }}
-    # User-supplied configuration:
-{{ tpl .Values.domains . | indent 4 }}
+data: 
+{{- if .Values.config }}
+  # User-supplied configuration:
+{{ tpl .Values.config . | indent 2 }}
 {{- end }}

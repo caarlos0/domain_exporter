@@ -142,6 +142,6 @@ prometheusRule:
   rules: []
   
 # domain_exporter configuration
-config: |-
+config:
   domains:
   - google.com

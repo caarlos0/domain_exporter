@@ -5,7 +5,5 @@ metadata:
   labels:
     {{- include "helm-charts.labels" . | nindent 4 }}
 data: 
-{{- if .Values.config }}
   # User-supplied configuration:
-{{ tpl .Values.config . | indent 2 }}
-{{- end }}
+{{ toYaml .Values.config | indent 2 }}

@@ -10,6 +10,6 @@ spec:
     - port: {{ .Values.service.port }}
       targetPort: http
       protocol: TCP
-      name: http
+      name: {{ .Values.service.name }}
   selector:
     {{- include "helm-charts.selectorLabels" . | nindent 4 }}

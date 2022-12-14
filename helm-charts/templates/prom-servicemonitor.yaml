@@ -1,0 +1,20 @@
+{{- if and (.Values.metrics.enabled) (.Values.metrics.serviceMonitor.enabled) }}
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  name: {{ include "helm-charts.fullname" . }}
+  labels:
+    {{- include "helm-charts.labels" . | nindent 4 }}
+    release: kps
+spec:
+  endpoints:
+  - port: {{ .Values.service.name }}
+    {{- if .Values.metrics.serviceMonitor.interval }}
+    interval: {{ .Values.metrics.serviceMonitor.interval }}
+    {{- end }}
+  selector:
+    matchLabels:
+      {{- include "helm-charts.selectorLabels" . | nindent 6 }}
+  namespaceSelector:
+    any: true
+{{- end -}}

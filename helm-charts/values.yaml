@@ -33,6 +33,26 @@ env:
   - name: "DOMAIN_EXPORTER_URL_PREFIX"
     value: ""
 
+livenessProbe:
+  httpGet:
+    path: /
+    port: metrics
+  initialDelaySeconds: 10
+  periodSeconds: 10
+  timeoutSeconds: 5
+  successThreshold: 1
+  failureThreshold: 6
+
+readinessProbe:
+  httpGet:
+    path: /
+    port: metrics
+  initialDelaySeconds: 10
+  periodSeconds: 10
+  timeoutSeconds: 5
+  successThreshold: 1
+  failureThreshold: 6
+
 securityContext:
   runAsUser: 1000
   runAsGroup: 1000

@@ -109,7 +109,7 @@ affinity: {}
 ## Prometheus Exporter / Metrics
 ##
 metrics:
-  enabled: false
+  enabled: true
 
   image:
     repository: prom/blackbox-exporter
@@ -143,7 +143,7 @@ metrics:
 
   # Enable this if you're using https://github.com/coreos/prometheus-operator
   serviceMonitor:
-    enabled: false
+    enabled: true
     ## Specify a namespace if needed
     # namespace: monitoring
     # fallback to the prometheus default unless specified
@@ -158,10 +158,18 @@ metrics:
 ## The value is evaluated as a template, so, for example, the value can depend on .Release or .Chart
 ## ref: https://github.com/coreos/prometheus-operator#customresourcedefinitions
 prometheusRule:
-  enabled: false
+  enabled: true
   additionalLabels: {}
   namespace: ""
-  rules: []
+  rules:
+    - alert: 30DaysLeftForDomain
+      expr: domain_expiry_days{domain="{{ template "helm-charts.fullname" . }}"} <= 30 
+      for: 1d
+      labels:
+        severity: warning
+      annotations:
+        summary: Domain {{ "{{ $domain.name }}" }} expires in 30 days
+        description: Domain {{ "{{ $domain.name }}" }} expires in 30 days
   
 # domain_exporter configuration
 config:

@@ -1,0 +1,610 @@
+{
+  "$schema": "http://json-schema.org/schema#",
+  "type": "object",
+  "required": [
+      "replicaCount",
+      "image",
+      "imagePullSecrets",
+      "serviceAccount",
+      "podAnnotations",
+      "podSecurityContext",
+      "env",
+      "livenessProbe",
+      "readinessProbe",
+      "securityContext",
+      "service",
+      "ingress",
+      "resources",
+      "autoscaling",
+      "nodeSelector",
+      "tolerations",
+      "affinity",
+      "metrics",
+      "prometheusRule",
+      "config"
+  ],
+  "properties": {
+      "fullnameOverride": {
+          "title": "The fullnameOverride Schema",
+          "type": "string",
+          "default": ""
+      },
+      "replicaCount": {
+          "title": "The replicaCount Schema",
+          "type": "number",
+          "default": 0
+      },
+      "image": {
+          "title": "The image Schema",
+          "type": "object",
+          "default": {},
+          "required": [
+              "repository",
+              "pullPolicy",
+              "tag"
+          ],
+          "properties": {
+              "repository": {
+                  "title": "The repository Schema",
+                  "type": "string",
+                  "default": ""
+              },
+              "pullPolicy": {
+                  "title": "The pullPolicy Schema",
+                  "type": "string",
+                  "default": ""
+              },
+              "tag": {
+                  "title": "The tag Schema",
+                  "type": "string",
+                  "default": ""
+              }
+          }
+      },
+      "imagePullSecrets": {
+          "title": "The imagePullSecrets Schema",
+          "type": "array",
+          "default": [],
+          "items": {}
+      },
+      "nameOverride": {
+          "title": "The nameOverride Schema",
+          "type": "string",
+          "default": ""
+      },
+      "serviceAccount": {
+          "title": "The serviceAccount Schema",
+          "type": "object",
+          "default": {},
+          "required": [
+              "create",
+              "annotations",
+              "name"
+          ],
+          "properties": {
+              "create": {
+                  "title": "The create Schema",
+                  "type": "boolean",
+                  "default": false
+              },
+              "annotations": {
+                  "title": "The annotations Schema",
+                  "type": "object",
+                  "default": {},
+                  "required": [],
+                  "properties": {}
+              },
+              "name": {
+                  "title": "The name Schema",
+                  "type": "string",
+                  "default": ""
+              }
+          }
+      },
+      "podAnnotations": {
+          "title": "The podAnnotations Schema",
+          "type": "object",
+          "default": {},
+          "required": [],
+          "properties": {}
+      },
+      "podSecurityContext": {
+          "title": "The podSecurityContext Schema",
+          "type": "object",
+          "default": {},
+          "required": [],
+          "properties": {}
+      },
+      "env": {
+          "title": "The env Schema",
+          "type": "array",
+          "default": [],
+          "items": {}
+      },
+      "livenessProbe": {
+          "title": "The livenessProbe Schema",
+          "type": "object",
+          "default": {},
+          "required": [
+              "httpGet",
+              "initialDelaySeconds",
+              "periodSeconds",
+              "timeoutSeconds",
+              "successThreshold",
+              "failureThreshold"
+          ],
+          "properties": {
+              "httpGet": {
+                  "title": "The httpGet Schema",
+                  "type": "object",
+                  "default": {},
+                  "required": [
+                      "path",
+                      "port"
+                  ],
+                  "properties": {
+                      "path": {
+                          "title": "The path Schema",
+                          "type": "string",
+                          "default": ""
+                      },
+                      "port": {
+                          "title": "The port Schema",
+                          "type": "string",
+                          "default": ""
+                      }
+                  }
+              },
+              "initialDelaySeconds": {
+                  "title": "The initialDelaySeconds Schema",
+                  "type": "number",
+                  "default": 0
+              },
+              "periodSeconds": {
+                  "title": "The periodSeconds Schema",
+                  "type": "number",
+                  "default": 0
+              },
+              "timeoutSeconds": {
+                  "title": "The timeoutSeconds Schema",
+                  "type": "number",
+                  "default": 0
+              },
+              "successThreshold": {
+                  "title": "The successThreshold Schema",
+                  "type": "number",
+                  "default": 0
+              },
+              "failureThreshold": {
+                  "title": "The failureThreshold Schema",
+                  "type": "number",
+                  "default": 0
+              }
+          }
+      },
+      "readinessProbe": {
+          "title": "The readinessProbe Schema",
+          "type": "object",
+          "default": {},
+          "required": [
+              "httpGet",
+              "initialDelaySeconds",
+              "periodSeconds",
+              "timeoutSeconds",
+              "successThreshold",
+              "failureThreshold"
+          ],
+          "properties": {
+              "httpGet": {
+                  "title": "The httpGet Schema",
+                  "type": "object",
+                  "default": {},
+                  "required": [
+                      "path",
+                      "port"
+                  ],
+                  "properties": {
+                      "path": {
+                          "title": "The path Schema",
+                          "type": "string",
+                          "default": ""
+                      },
+                      "port": {
+                          "title": "The port Schema",
+                          "type": "string",
+                          "default": ""
+                      }
+                  }
+              },
+              "initialDelaySeconds": {
+                  "title": "The initialDelaySeconds Schema",
+                  "type": "number",
+                  "default": 0
+              },
+              "periodSeconds": {
+                  "title": "The periodSeconds Schema",
+                  "type": "number",
+                  "default": 0
+              },
+              "timeoutSeconds": {
+                  "title": "The timeoutSeconds Schema",
+                  "type": "number",
+                  "default": 0
+              },
+              "successThreshold": {
+                  "title": "The successThreshold Schema",
+                  "type": "number",
+                  "default": 0
+              },
+              "failureThreshold": {
+                  "title": "The failureThreshold Schema",
+                  "type": "number",
+                  "default": 0
+              }
+          }
+      },
+      "securityContext": {
+          "title": "The securityContext Schema",
+          "type": "object",
+          "default": {},
+          "required": [
+              "runAsUser",
+              "runAsGroup",
+              "readOnlyRootFilesystem",
+              "runAsNonRoot",
+              "allowPrivilegeEscalation",
+              "capabilities"
+          ],
+          "properties": {
+              "runAsUser": {
+                  "title": "The runAsUser Schema",
+                  "type": "number",
+                  "default": 0
+              },
+              "runAsGroup": {
+                  "title": "The runAsGroup Schema",
+                  "type": "number",
+                  "default": 0
+              },
+              "readOnlyRootFilesystem": {
+                  "title": "The readOnlyRootFilesystem Schema",
+                  "type": "boolean",
+                  "default": false
+              },
+              "runAsNonRoot": {
+                  "title": "The runAsNonRoot Schema",
+                  "type": "boolean",
+                  "default": false
+              },
+              "allowPrivilegeEscalation": {
+                  "title": "The allowPrivilegeEscalation Schema",
+                  "type": "boolean",
+                  "default": false
+              },
+              "capabilities": {
+                  "title": "The capabilities Schema",
+                  "type": "object",
+                  "default": {},
+                  "required": [
+                      "drop"
+                  ],
+                  "properties": {
+                      "drop": {
+                          "title": "The drop Schema",
+                          "type": "array",
+                          "default": [],
+                          "items": {}
+                      }
+                  }
+              }
+          }
+      },
+      "service": {
+          "title": "The service Schema",
+          "type": "object",
+          "default": {},
+          "required": [
+              "type",
+              "port",
+              "name"
+          ],
+          "properties": {
+              "type": {
+                  "title": "The type Schema",
+                  "type": "string",
+                  "default": ""
+              },
+              "port": {
+                  "title": "The port Schema",
+                  "type": "number",
+                  "default": 0
+              },
+              "name": {
+                  "title": "The name Schema",
+                  "type": "string",
+                  "default": ""
+              }
+          }
+      },
+      "ingress": {
+          "title": "The ingress Schema",
+          "type": "object",
+          "default": {},
+          "required": [
+              "enabled",
+              "className",
+              "annotations",
+              "hosts",
+              "tls"
+          ],
+          "properties": {
+              "enabled": {
+                  "title": "The enabled Schema",
+                  "type": "boolean",
+                  "default": false
+              },
+              "className": {
+                  "title": "The className Schema",
+                  "type": "string",
+                  "default": ""
+              },
+              "annotations": {
+                  "title": "The annotations Schema",
+                  "type": "object",
+                  "default": {},
+                  "required": [],
+                  "properties": {}
+              },
+              "hosts": {
+                  "title": "The hosts Schema",
+                  "type": "array",
+                  "default": [],
+                  "items": {}
+              },
+              "tls": {
+                  "title": "The tls Schema",
+                  "type": "array",
+                  "default": [],
+                  "items": {}
+              }
+          }
+      },
+      "resources": {
+          "title": "The resources Schema",
+          "type": "object",
+          "default": {},
+          "required": [],
+          "properties": {}
+      },
+      "autoscaling": {
+          "title": "The autoscaling Schema",
+          "type": "object",
+          "default": {},
+          "required": [
+              "enabled",
+              "minReplicas",
+              "maxReplicas",
+              "targetCPUUtilizationPercentage"
+          ],
+          "properties": {
+              "enabled": {
+                  "title": "The enabled Schema",
+                  "type": "boolean",
+                  "default": false
+              },
+              "minReplicas": {
+                  "title": "The minReplicas Schema",
+                  "type": "number",
+                  "default": 0
+              },
+              "maxReplicas": {
+                  "title": "The maxReplicas Schema",
+                  "type": "number",
+                  "default": 0
+              },
+              "targetCPUUtilizationPercentage": {
+                  "title": "The targetCPUUtilizationPercentage Schema",
+                  "type": "number",
+                  "default": 0
+              }
+          }
+      },
+      "nodeSelector": {
+          "title": "The nodeSelector Schema",
+          "type": "object",
+          "default": {},
+          "required": [],
+          "properties": {}
+      },
+      "tolerations": {
+          "title": "The tolerations Schema",
+          "type": "array",
+          "default": [],
+          "items": {}
+      },
+      "affinity": {
+          "title": "The affinity Schema",
+          "type": "object",
+          "default": {},
+          "required": [],
+          "properties": {}
+      },
+      "metrics": {
+          "title": "The metrics Schema",
+          "type": "object",
+          "default": {},
+          "required": [
+              "enabled",
+              "image",
+              "podAnnotations",
+              "podMonitor",
+              "serviceMonitor"
+          ],
+          "properties": {
+              "enabled": {
+                  "title": "The enabled Schema",
+                  "type": "boolean",
+                  "default": false
+              },
+              "image": {
+                  "title": "The image Schema",
+                  "type": "object",
+                  "default": {},
+                  "required": [
+                      "repository",
+                      "tag",
+                      "pullPolicy"
+                  ],
+                  "properties": {
+                      "repository": {
+                          "title": "The repository Schema",
+                          "type": "string",
+                          "default": ""
+                      },
+                      "tag": {
+                          "title": "The tag Schema",
+                          "type": "string",
+                          "default": ""
+                      },
+                      "pullPolicy": {
+                          "title": "The pullPolicy Schema",
+                          "type": "string",
+                          "default": ""
+                      }
+                  }
+              },
+              "podAnnotations": {
+                  "title": "The podAnnotations Schema",
+                  "type": "object",
+                  "default": {},
+                  "required": [
+                      "prometheus.io/scrape",
+                      "prometheus.io/port"
+                  ],
+                  "properties": {
+                      "prometheus.io/scrape": {
+                          "title": "The prometheus.io/scrape Schema",
+                          "type": "string",
+                          "default": ""
+                      },
+                      "prometheus.io/port": {
+                          "title": "The prometheus.io/port Schema",
+                          "type": "string",
+                          "default": ""
+                      }
+                  }
+              },
+              "podMonitor": {
+                  "title": "The podMonitor Schema",
+                  "type": "object",
+                  "default": {},
+                  "required": [
+                      "enabled"
+                  ],
+                  "properties": {
+                      "enabled": {
+                          "title": "The enabled Schema",
+                          "type": "boolean",
+                          "default": false
+                      }
+                  }
+              },
+              "serviceMonitor": {
+                  "title": "The serviceMonitor Schema",
+                  "type": "object",
+                  "default": {},
+                  "required": [
+                      "enabled",
+                      "selector"
+                  ],
+                  "properties": {
+                      "enabled": {
+                          "title": "The enabled Schema",
+                          "type": "boolean",
+                          "default": false
+                      },
+                      "selector": {
+                          "title": "The selector Schema",
+                          "type": "object",
+                          "default": {},
+                          "required": [
+                              "prometheus"
+                          ],
+                          "properties": {
+                              "prometheus": {
+                                  "title": "The prometheus Schema",
+                                  "type": "string",
+                                  "default": ""
+                              }
+                          }
+                      }
+                  }
+              }
+          }
+      },
+      "prometheusRule": {
+          "title": "The prometheusRule Schema",
+          "type": "object",
+          "default": {},
+          "required": [
+              "enabled",
+              "additionalLabels",
+              "namespace",
+              "rules"
+          ],
+          "properties": {
+              "enabled": {
+                  "title": "The enabled Schema",
+                  "type": "boolean",
+                  "default": false
+              },
+              "additionalLabels": {
+                  "title": "The additionalLabels Schema",
+                  "type": "object",
+                  "default": {},
+                  "required": [],
+                  "properties": {}
+              },
+              "namespace": {
+                  "title": "The namespace Schema",
+                  "type": "string",
+                  "default": ""
+              },
+              "rules": {
+                  "title": "The rules Schema",
+                  "type": "array",
+                  "default": [],
+                  "items": {}
+              }
+          }
+      },
+      "config": {
+        "type": "object",
+        "title": "The config for domain_exporter",
+        "required": [
+            "domains"
+        ],
+        "properties": {
+            "domains": {
+                "type": "array",
+                "title": "The domains to whois",
+                "items": {
+                    "type": "string",
+                    "title": "Domain to whois",
+                    "anyOf": [
+                      { "format": "hostname" },
+                      { "format": "ipv4" },
+                      { "format": "ipv6" }
+                    ]
+                }
+            }
+        },
+        "examples": [{
+            "domains": [
+                "google.com"
+            ]
+        }]
+    }
+  }
+}
+

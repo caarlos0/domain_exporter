@@ -29,6 +29,10 @@ podAnnotations: {}
 podSecurityContext: {}
   # fsGroup: 2000
 
+env:
+  - name: "DOMAIN_EXPORTER_URL_PREFIX"
+    value: ""
+
 securityContext:
   runAsUser: 1000
   runAsGroup: 1000

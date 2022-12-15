@@ -52,6 +52,12 @@ domain_exporter --config domains.yaml
 
 ## Install
 
+** helm **:
+
+```sh
+helm install domain-exporter .
+```
+
 **homebrew**:
 
 ```sh

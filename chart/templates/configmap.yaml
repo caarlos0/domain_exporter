@@ -4,6 +4,6 @@ metadata:
   name: {{ include "helm-charts.fullname" . }}
   labels:
     {{- include "helm-charts.labels" . | nindent 4 }}
-data: 
-  # User-supplied configuration:
-{{ toYaml .Values.config | indent 2 }}
+data:
+  config.yaml: |-
+{{ toYaml .Values.config | indent 4 }}

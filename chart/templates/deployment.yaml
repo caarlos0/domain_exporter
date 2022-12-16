@@ -30,13 +30,13 @@ spec:
       volumes:
         - name: config
           configMap:
-            name: {{ .Chart.Name }}-config.yaml
+            name: {{ .Chart.Name }}.yaml
       containers:
         - name: {{ .Chart.Name }}
           command: ["/usr/bin/domain_exporter"]
           args:
             - "--config"
-            - "/opt/domain_exporter/etc/{{ .Chart.Name }}-config.yaml"
+            - "/opt/domain_exporter/etc/config.yaml"
           securityContext:
             {{- toYaml .Values.securityContext | nindent 12 }}
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
@@ -56,7 +56,7 @@ spec:
           resources:
             {{- toYaml .Values.resources | nindent 12 }}
           volumeMounts:
-            - name: {{ .Chart.Name }}-config.yaml
+            - name: config
               mountPath: /opt/domain_exporter/etc
       {{- with .Values.nodeSelector }}
       nodeSelector:

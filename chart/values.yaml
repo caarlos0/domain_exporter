@@ -7,7 +7,7 @@ image:
   repository: ghcr.io/caarlos0/domain_exporter
   pullPolicy: IfNotPresent
   # Overrides the image tag whose default is the chart appVersion.
-  tag: ""
+  tag: "v1.18.0-arm64"
 
 imagePullSecrets: []
 nameOverride: ""
@@ -34,8 +34,8 @@ env:
 livenessProbe:
   httpGet:
     path: /
-    port: metrics
-  initialDelaySeconds: 10
+    port: http
+  initialDelaySeconds: 3
   periodSeconds: 10
   timeoutSeconds: 5
   successThreshold: 1
@@ -44,8 +44,8 @@ livenessProbe:
 readinessProbe:
   httpGet:
     path: /
-    port: metrics
-  initialDelaySeconds: 10
+    port: http
+  initialDelaySeconds: 3
   periodSeconds: 10
   timeoutSeconds: 5
   successThreshold: 1
@@ -63,7 +63,7 @@ securityContext:
 service:
   type: ClusterIP
   port: 9222
-  name: metrics
+  name: http
 
 ingress:
   enabled: false
@@ -159,19 +159,27 @@ metrics:
 ## ref: https://github.com/coreos/prometheus-operator#customresourcedefinitions
 prometheusRule:
   enabled: true
+  namespace: "default"
   additionalLabels: {}
-  namespace: ""
   rules:
     - alert: 30DaysLeftForDomain
-      expr: domain_expiry_days{domain="{{ template "helm-charts.fullname" . }}"} <= 30 
-      for: 1d
+      expr: domain_expiry_days <= 30
       labels:
         severity: warning
       annotations:
-        summary: Domain {{ "{{ $domain.name }}" }} expires in 30 days
-        description: Domain {{ "{{ $domain.name }}" }} expires in 30 days
+        summary: Domain will expire in month
+        description: Domain {{ "{{ $value }}" }} expires in 30 days
+
+    - alert: 14DaysLeftForDomain
+      expr: domain_expiry_days <= 14
+      labels:
+        severity: critical
+      annotations:
+        summary: Domain will expire in month
+        description: Domain {{ "{{ $value }}" }} expires in 14 days
   
 # domain_exporter configuration
 config:
   domains:
   - google.com
+  - kazplay.me

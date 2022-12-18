@@ -1,0 +1,22 @@
+{{- if .Values.alertmanagerconfig.enabled }}
+apiVersion: monitoring.coreos.com/v1alpha1
+kind: AlertmanagerConfig
+metadata:
+  name: {{ template "helm-charts.fullname" . }}
+  labels:
+    {{- include "helm-charts.labels" . | nindent 4 }}
+    release: kps
+{{- with .Values.alertmanagerconfig.additionalLabels }}
+{{ toYaml . | indent 4 }}
+{{- end }}
+spec:
+  alertmanagerConfig:
+{{- with .Values.alertmanagerconfig.route }}
+    route:
+{{ toYaml . | indent 6 }}
+{{- end }}
+{{- with .Values.alertmanagerconfig.receivers }}
+    receivers: 
+{{ tpl (toYaml .) $ | nindent 6 }}
+{{- end }}
+{{- end }}

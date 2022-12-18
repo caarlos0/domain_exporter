@@ -168,16 +168,38 @@ prometheusRule:
         severity: warning
       annotations:
         summary: Domain will expire in month
-        description: Domain {{ "{{ $value }}" }} expires in 30 days
+        description: Domain {{ "{{ $domain }}" }} expires in 30 days
 
     - alert: 14DaysLeftForDomain
       expr: domain_expiry_days <= 14
+      for: 1d
       labels:
         severity: critical
       annotations:
         summary: Domain will expire in month
-        description: Domain {{ "{{ $value }}" }} expires in 14 days
-  
+        description: Domain {{ "{{ $domain }}" }} expires in 14 days
+ 
+alertmanagerconfig:
+  enabled: true
+  namespace: "default"
+  additionalLabels: {}
+  route:
+    group_by: ['job']
+    group_wait: 30s
+    group_interval: 5m
+    repeat_interval: 3h
+    receiver: 'telegram'
+  receivers:
+  - name: 'telegram'
+    telegramConfigs:
+    - botToken:
+        name: domainexporter
+        key: token
+      apiURL: "https://api.telegram.org"
+      chatID: 498984047
+      message: '{{ template "telegram.html" . }}'
+      parseMode: "HTML"
+ 
 # domain_exporter configuration
 config:
   domains:

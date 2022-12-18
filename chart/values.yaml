@@ -168,7 +168,7 @@ prometheusRule:
         severity: warning
       annotations:
         summary: Domain will expire in month
-        description: Domain {{ "{{ $domain }}" }} expires in 30 days
+        description: Domain {{ "{{ $labels.domain }}" }} expires in {{ "{{ $value }}" }} days
 
     - alert: 14DaysLeftForDomain
       expr: domain_expiry_days <= 14
@@ -177,7 +177,7 @@ prometheusRule:
         severity: critical
       annotations:
         summary: Domain will expire in month
-        description: Domain {{ "{{ $domain }}" }} expires in 14 days
+        description: Domain {{ "{{ $labels.domain }}" }} expires in {{ "{{ $value }}" }} days
  
 alertmanagerconfig:
   enabled: true

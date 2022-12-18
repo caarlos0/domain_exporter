@@ -75,7 +75,7 @@ metadata:
     release: kps
 type: Opaque
 data:
-  token: your_token
+  token: your_token_base64_formatted
 ```
 
 2. update default kube-prom-stack or whatever alertmanager config with the following:

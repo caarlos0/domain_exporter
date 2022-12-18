@@ -10,13 +10,12 @@ metadata:
 {{ toYaml . | indent 4 }}
 {{- end }}
 spec:
-  alertmanagerConfig:
 {{- with .Values.alertmanagerconfig.route }}
-    route:
-{{ toYaml . | indent 6 }}
+  route:
+{{ toYaml . | indent 4 }}
 {{- end }}
 {{- with .Values.alertmanagerconfig.receivers }}
-    receivers: 
-{{ tpl (toYaml .) $ | nindent 6 }}
+  receivers: 
+{{ tpl (toYaml .) $ | nindent 4 }}
 {{- end }}
 {{- end }}

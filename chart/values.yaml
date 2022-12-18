@@ -184,10 +184,10 @@ alertmanagerconfig:
   namespace: "default"
   additionalLabels: {}
   route:
-    group_by: ['job']
-    group_wait: 30s
-    group_interval: 5m
-    repeat_interval: 3h
+    groupBy: ['job']
+    groupWait: 30s
+    groupInterval: 5m
+    repeatInterval: 3h
     receiver: 'telegram'
   receivers:
   - name: 'telegram'
@@ -197,7 +197,7 @@ alertmanagerconfig:
         key: token
       apiURL: "https://api.telegram.org"
       chatID: 498984047
-      message: '{{ template "telegram.html" . }}'
+      message: '{{ "{{ template \"telegram.html\" . }}" }}'
       parseMode: "HTML"
  
 # domain_exporter configuration

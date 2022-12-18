@@ -58,6 +58,72 @@ domain_exporter --config domains.yaml
 helm install domain-exporter .
 ```
 
+For sending alerts to telegram you'll need to get a littl bit tricky:
+
+1. Create telegram bot and retrieve its token from [BotFather](https://t.me/BotFather), then create secret in the same namespace with alertmanager deployment
+```secret-sample.yaml
+apiVersion: v1
+kind: Secret
+metadata:
+  name: domainexporter
+  labels:
+    helm.sh/chart: domainexporter-0.1.0
+    app.kubernetes.io/name: domainexporter
+    app.kubernetes.io/instance: domainexporter
+    app.kubernetes.io/version: "1.16.0"
+    app.kubernetes.io/managed-by: Helm
+    release: kps
+type: Opaque
+data:
+  token: your_token
+```
+
+2. update default kube-prom-stack or whatever alertmanager config with the following:
+
+```values.override.yaml
+alertmanager:
+
+  tplConfig: true
+  templateFiles:
+     templates.tmpl: |-
+        {{ define "cluster" }}{{ .ExternalURL | reReplaceAll ".*alertmanager\\.(.*)" "$1" }}{{ end }}
+
+        {{ define "slack.myorg.text" }}
+        {{- $root := . -}}
+        {{ range .Alerts }}
+          *Alert:* {{ .Annotations.summary }} - `{{ .Labels.severity }}`
+          *Cluster:* {{ template "cluster" $root }}
+          *Description:* {{ .Annotations.description }}
+          *Graph:* <{{ .GeneratorURL }}|:chart_with_upwards_trend:>
+          *Runbook:* <{{ .Annotations.runbook }}|:spiral_note_pad:>
+          *Details:*
+            {{ range .Labels.SortedPairs }} - *{{ .Name }}:* `{{ .Value }}`
+            {{ end }}
+        {{ end }}
+        {{ end }}
+
+        {{ define "telegram.text" }}
+        {{ range .Alerts }}
+          *Alert:* {{ .Annotations.summary }}
+          *Description:* {{ .Annotations.description }}
+          *Labels:*
+            {{ range .Labels.SortedPairs }}
+              {{ .Name }} "{{ .Value }}"
+            {{ end }}
+          *Details:*
+            {{ range .Labels.SortedPairs }}
+              {{ .Name }} "{{ .Value }}"
+            {{ end }}
+        {{ end }}
+        {{ end }}
+```
+
+Follow [this](https://github.com/prometheus-community/helm-charts/tree/main/charts/kube-prometheus-stack#get-helm-repository-info) instructions first.
+And then apply that changes:
+> helm upgrade -f values.overrided.yaml your_release_name prometheus-community/kube-prometheus-stack
+
+Now, I recommend you to delete alertmanager's pod for it to get updates.
+
 **homebrew**:
 
 ```sh

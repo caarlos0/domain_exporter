@@ -60,7 +60,8 @@ helm install domain-exporter .
 
 For sending alerts to telegram you'll need to get a littl bit tricky:
 
-1. Create telegram bot and retrieve its token from [BotFather](https://t.me/BotFather), then create secret in the same namespace with alertmanager deployment
+1. Create telegram bot and retrieve its token from [BotFather](https://t.me/BotFather), then create secret in the same namespace with alertmanager deployment. <br>
+Let's suppose your release would be called `domainexporter`:
 ```secret-sample.yaml
 apiVersion: v1
 kind: Secret

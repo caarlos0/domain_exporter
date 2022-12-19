@@ -52,7 +52,7 @@ domain_exporter --config domains.yaml
 
 ## Install
 
-** helm **:
+**helm**:
 
 ```sh
 helm install domain-exporter .

@@ -3,6 +3,7 @@ apiVersion: autoscaling/v2beta1
 kind: HorizontalPodAutoscaler
 metadata:
   name: {{ include "helm-charts.fullname" . }}
+  namespace: {{ .Release.Namespace }}
   labels:
     {{- include "helm-charts.labels" . | nindent 4 }}
 spec:

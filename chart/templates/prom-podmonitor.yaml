@@ -3,6 +3,7 @@ apiVersion: monitoring.coreos.com/v1
 kind: PodMonitor
 metadata:
   name: {{ include "helm-charts.fullname" . }}
+  namespace: {{ .Release.Namespace }}
   labels:
     {{- include "helm-charts.labels" . | nindent 4 }}
     release: kps

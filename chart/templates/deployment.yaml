@@ -6,6 +6,10 @@ metadata:
   labels:
     {{- include "helm-charts.labels" . | nindent 4 }}
 spec:
+  {{- with .Values.strategy }}
+  strategy:
+  {{- toYaml . | nindent 4 }}
+  {{- end }}
   {{- if not .Values.autoscaling.enabled }}
   replicas: {{ .Values.replicaCount }}
   {{- end }}

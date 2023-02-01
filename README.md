@@ -4,17 +4,14 @@ Exports the expiration time of your domains as prometheus metrics.
 
 #### Environment variables
 
-- `DOMAIN_EXPORTER_URL_PREFIX` - use when HTTP endpoint served with a prefix, e.g.:
-
-  For this endpoint `http://example.org/exporters/domains` set to `/exporters/domains`.
-
-  Not really required since useful only to prevent breaking human-oriented links.
-
-  Defaults to empty string.
+- `DOMAIN_EXPORTER_URL_PREFIX` — use when HTTP endpoint served with a prefix,
+  e.g.: For this endpoint `http://example.org/exporters/domains` set to
+  `/exporters/domains`. Not really required since useful only to prevent
+  breaking human-oriented links. Defaults to empty string.
 
 ## Configuration
 
-On the prometheus settings, add the `domain_exporter` prober:
+On the Prometheus settings, add the `domain_exporter` probe:
 
 ```yaml
 - job_name: domain
@@ -31,23 +28,23 @@ On the prometheus settings, add the `domain_exporter` prober:
       - watchub.pw
 ```
 
-It works more or less like prometheus's
+It works more or less like Prometheus's
 [blackbox_exporter](https://github.com/prometheus/blackbox_exporter).
 
 Alerting rules examples can be found on the
 [_examples](https://github.com/caarlos0/domain_exporter/tree/main/_examples)
 folder.
 
-You can configure `domain_exporter` to always export metrics for specific domains.
-Create configuration file:
+You can configure `domain_exporter` to always export metrics for specific
+domains. Create configuration file:
 ```yaml
 domains:
 - google.com
 - reddit.com
 ```
-And pass file path as agrument to `domain_exporter`:
+And pass file path as argument to `domain_exporter`:
 ```
-domain_exporter --config domains.yaml
+domain_exporter --config=domains.yaml
 ```
 
 ## Install
@@ -158,11 +155,13 @@ sudo yum install domain_exporter
 
 **deb/rpm/apk**:
 
-Download the `.apk`, `.deb` or `.rpm` from the [releases page][releases] and install with the appropriate commands.
+Download the `.apk`, `.deb` or `.rpm` from the [releases page][releases] and
+install with the appropriate commands.
 
 **manually**:
 
-Download the pre-compiled binaries from the [releases page][releases] or clone the repo build from source.
+Download the pre-compiled binaries from the [releases page][releases] or clone
+the repository build from source.
 
 [releases]: https://github.com/caarlos0/domain_exporter/releases
 

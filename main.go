@@ -140,7 +140,7 @@ func runServerWithGracefullyShutdown(wg *sync.WaitGroup) error {
 func probeHandler(cli client.Client) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		params := r.URL.Query()
-		target := strings.Replace(params.Get("target"), "www.", "", 1)
+		target := strings.TrimPrefix(params.Get("target"), "www.")
 		if target == "" {
 			log.Error().Msg("target parameter missing")
 			http.Error(w, "target parameter is missing", http.StatusBadRequest)

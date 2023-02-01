@@ -27,10 +27,6 @@ podAnnotations: {}
 podSecurityContext: {}
   # fsGroup: 2000
 
-env:
-  - name: "DOMAIN_EXPORTER_URL_PREFIX"
-    value: ""
-
 livenessProbe:
   httpGet:
     path: /
@@ -179,7 +175,11 @@ prometheusRule:
       annotations:
         summary: Domain will expire in month
         description: Domain {{ "{{ $labels.domain }}" }} expires in {{ "{{ $value }}" }} days
- 
+
+env:
+  - name: "DOMAIN_EXPORTER_URL_PREFIX"
+    value: ""
+
 # domain_exporter configuration
 config:
   domains:

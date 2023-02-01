@@ -159,7 +159,7 @@ metrics:
 ## ref: https://github.com/coreos/prometheus-operator#customresourcedefinitions
 prometheusRule:
   enabled: true
-  namespace: "default"
+  namespace: "{{ .Release.Namespace }}"
   additionalLabels: {}
   rules:
 

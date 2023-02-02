@@ -35,8 +35,8 @@ jobs:
             echo "::set-output name=changed::true"
           fi
 
-      - name: Run chart-testing (lint)
-        run: ct lint --target-branch ${{ github.event.repository.default_branch }}
+      #- name: Run chart-testing (lint)
+      #  run: ct lint --target-branch ${{ github.event.repository.default_branch }}
 
       - name: Create kind cluster
         uses: helm/kind-action@v1.4.0

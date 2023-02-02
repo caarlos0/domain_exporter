@@ -1,5 +1,5 @@
 apiVersion: v2
-name: domainexporter
+name: domain-exporter
 description: A Helm chart for domain_exporter
 
 # A chart can be either an 'application' or a 'library' chart.

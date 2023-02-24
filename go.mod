@@ -4,7 +4,7 @@ go 1.19
 
 require (
 	github.com/alecthomas/kingpin v2.2.6+incompatible
-	github.com/domainr/whois v0.0.0-20211220165945-1dc378c18f6b
+	github.com/domainr/whois v0.1.0
 	github.com/matryer/is v1.4.1
 	github.com/openrdap/rdap v0.9.1-0.20191017185644-af93e7ef17b7
 	github.com/patrickmn/go-cache v2.1.0+incompatible
@@ -31,7 +31,7 @@ require (
 	github.com/prometheus/procfs v0.8.0 // indirect
 	github.com/saintfish/chardet v0.0.0-20120816061221-3af4cd4741ca // indirect
 	github.com/stretchr/testify v1.7.0 // indirect
-	github.com/zonedb/zonedb v1.0.3487 // indirect
+	github.com/zonedb/zonedb v1.0.3544 // indirect
 	golang.org/x/crypto v0.6.0 // indirect
 	golang.org/x/sys v0.5.0 // indirect
 	golang.org/x/text v0.7.0 // indirect

@@ -5,7 +5,7 @@ go 1.19
 require (
 	github.com/alecthomas/kingpin v2.2.6+incompatible
 	github.com/domainr/whois v0.0.0-20211220165945-1dc378c18f6b
-	github.com/matryer/is v1.4.0
+	github.com/matryer/is v1.4.1
 	github.com/openrdap/rdap v0.9.1-0.20191017185644-af93e7ef17b7
 	github.com/patrickmn/go-cache v2.1.0+incompatible
 	github.com/prometheus/client_golang v1.14.0

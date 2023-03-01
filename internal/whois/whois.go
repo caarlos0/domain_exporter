@@ -85,9 +85,9 @@ func NewClient() client.Client {
 	return whoisClient{}
 }
 
-func (c whoisClient) ExpireTime(ctx context.Context, domain string) (time.Time, error) {
+func (c whoisClient) ExpireTime(ctx context.Context, domain string, host string) (time.Time, error) {
 	log.Debug().Msgf("trying whois client for %q", domain)
-	body, err := c.request(ctx, domain, "")
+	body, err := c.request(ctx, domain, host)
 	if err != nil {
 		return time.Now(), err
 	}

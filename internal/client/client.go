@@ -7,5 +7,5 @@ import (
 
 // Client is a DNS client impl.
 type Client interface {
-	ExpireTime(ctx context.Context, domain string) (time.Time, error)
+	ExpireTime(ctx context.Context, domain string, host string) (time.Time, error)
 }

@@ -14,14 +14,14 @@ type testClient struct {
 	result *time.Time
 }
 
-func (f testClient) ExpireTime(_ context.Context, _ string) (time.Time, error) {
+func (f testClient) ExpireTime(_ context.Context, _ string, _ string) (time.Time, error) {
 	return *f.result, nil
 }
 
 type errTestClient struct {
 }
 
-func (f errTestClient) ExpireTime(_ context.Context, _ string) (time.Time, error) {
+func (f errTestClient) ExpireTime(_ context.Context, _ string, _ string) (time.Time, error) {
 	return time.Now(), fmt.Errorf("failed to get domain info blah")
 }
 
@@ -30,12 +30,13 @@ func TestCachedClient(t *testing.T) {
 	cache := cache.New(1*time.Minute, 1*time.Minute)
 	expected := time.Now()
 	domain := "foo.bar"
+	host := ""
 
 	cli := NewCachedClient(testClient{result: &expected}, cache)
 
 	// test getting from out fake client
 	t.Run("get fresh", func(t *testing.T) {
-		res, err := cli.ExpireTime(ctx, domain)
+		res, err := cli.ExpireTime(ctx, domain, host)
 		is := is.New(t)
 		is.NoErr(err)           // expected an error
 		is.Equal(expected, res) // expected the same result
@@ -46,7 +47,7 @@ func TestCachedClient(t *testing.T) {
 	t.Run("get from cache", func(t *testing.T) {
 		oldExpected := expected
 		expected = time.Now()
-		res, err := cli.ExpireTime(ctx, domain)
+		res, err := cli.ExpireTime(ctx, domain, host)
 		is := is.New(t)
 		is.NoErr(err)              // expected an error
 		is.Equal(oldExpected, res) // expected the same result
@@ -56,7 +57,7 @@ func TestCachedClient(t *testing.T) {
 	// from the fake client
 	t.Run("flush cache", func(t *testing.T) {
 		cache.Flush()
-		res, err := cli.ExpireTime(ctx, domain)
+		res, err := cli.ExpireTime(ctx, domain, host)
 		is := is.New(t)
 		is.NoErr(err)           // expected an error
 		is.Equal(expected, res) // expected the same result
@@ -67,10 +68,10 @@ func TestCachedClient(t *testing.T) {
 		is := is.New(t)
 
 		cli := NewCachedClient(errTestClient{}, cache)
-		_, err := cli.ExpireTime(ctx, domain)
+		_, err := cli.ExpireTime(ctx, domain, host)
 		is.True(err != nil) // expected an error
 
-		_, err = cli.ExpireTime(ctx, domain)
+		_, err = cli.ExpireTime(ctx, domain, host)
 		is.True(err != nil) // expected an error
 
 		cached, got := cache.Get(domain)

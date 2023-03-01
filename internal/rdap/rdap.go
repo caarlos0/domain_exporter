@@ -52,7 +52,7 @@ func NewClient() client.Client {
 	return rdapClient{}
 }
 
-func (rdapClient) ExpireTime(ctx context.Context, domain string) (time.Time, error) {
+func (rdapClient) ExpireTime(ctx context.Context, domain string, host string) (time.Time, error) {
 	log.Debug().Msgf("trying rdap client for %s", domain)
 	req := &rdap.Request{
 		Type:  rdap.DomainRequest,

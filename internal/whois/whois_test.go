@@ -12,34 +12,35 @@ import (
 func TestWhoisParsing(t *testing.T) {
 	for _, tt := range []struct {
 		domain string
+		host   string
 		err    string
 	}{
-		{domain: "google.ai", err: "could not parse whois response"},
-		{domain: "google.lt", err: ""},
-		{domain: "fakedomain.foo", err: "Domain not found"},
-		{domain: "google.cn", err: ""},
-		{domain: "google.com", err: ""},
-		{domain: "google.de", err: "could not parse whois response"},
-		{domain: "nic.ua", err: ""},
-		{domain: "google.com.tw", err: ""},
-		{domain: "bbc.co.uk", err: ""},
-		{domain: "google.sg", err: ""},
-		{domain: "google.sk", err: ""},
-		{domain: "google.ro", err: ""},
-		{domain: "google.pt", err: "i/o timeout"},
-		{domain: "google.it", err: ""},
-		{domain: "google.pw", err: ""},
-		{domain: "google.co.id", err: ""},
-		{domain: "google.kr", err: ""},
-		{domain: "google.jp", err: ""},
-		{domain: "microsoft.im", err: ""},
-		{domain: "google.rs", err: ""},
-		{domain: "мвд.рф", err: ""},
-		{domain: "МВД.РФ", err: ""},
-		{domain: "GOOGLE.RS", err: ""},
-		{domain: "google.co.th", err: ""},
-		{domain: "google.fi", err: ""},
-		{domain: "google.host", err: ""},
+		{domain: "google.ai", host: "", err: "could not parse whois response"},
+		{domain: "google.lt", host: "", err: ""},
+		{domain: "fakedomain.foo", host: "", err: "Domain not found"},
+		{domain: "google.cn", host: "", err: ""},
+		{domain: "google.com", host: "", err: ""},
+		{domain: "google.de", host: "", err: "could not parse whois response"},
+		{domain: "nic.ua", host: "", err: ""},
+		{domain: "google.com.tw", host: "", err: ""},
+		{domain: "bbc.co.uk", host: "", err: ""},
+		{domain: "google.sg", host: "", err: ""},
+		{domain: "google.sk", host: "", err: ""},
+		{domain: "google.ro", host: "", err: ""},
+		{domain: "google.pt", host: "", err: "i/o timeout"},
+		{domain: "google.it", host: "", err: ""},
+		{domain: "google.pw", host: "", err: ""},
+		{domain: "google.co.id", host: "", err: ""},
+		{domain: "google.kr", host: "", err: ""},
+		{domain: "google.jp", host: "", err: ""},
+		{domain: "microsoft.im", host: "", err: ""},
+		{domain: "google.rs", host: "", err: ""},
+		{domain: "мвд.рф", host: "", err: ""},
+		{domain: "МВД.РФ", host: "", err: ""},
+		{domain: "GOOGLE.RS", host: "", err: ""},
+		{domain: "google.co.th", host: "", err: ""},
+		{domain: "google.fi", host: "", err: ""},
+		{domain: "google.host", host: "", err: ""},
 	} {
 		tt := tt
 		t.Run(tt.domain, func(t *testing.T) {
@@ -49,7 +50,7 @@ func TestWhoisParsing(t *testing.T) {
 			ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
 			t.Cleanup(cancel)
 
-			expiry, err := NewClient().ExpireTime(ctx, tt.domain)
+			expiry, err := NewClient().ExpireTime(ctx, tt.domain, tt.host)
 			if tt.err == "" {
 				is.NoErr(err)                           // expected no errors
 				is.True(time.Since(expiry).Hours() < 0) // domain must not be expired

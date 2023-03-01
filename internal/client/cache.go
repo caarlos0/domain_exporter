@@ -21,14 +21,14 @@ func NewCachedClient(client Client, cache *cache.Cache) Client {
 	}
 }
 
-func (c cachedClient) ExpireTime(ctx context.Context, domain string) (time.Time, error) {
+func (c cachedClient) ExpireTime(ctx context.Context, domain string, host string) (time.Time, error) {
 	cached, found := c.cache.Get(domain)
 	if found {
 		log.Debug().Msgf("using result from cache for %s", domain)
 		return cached.(time.Time), nil
 	}
 	log.Debug().Msgf("getting live result for %s", domain)
-	live, err := c.client.ExpireTime(ctx, domain)
+	live, err := c.client.ExpireTime(ctx, domain, host)
 	if err == nil {
 		log.Debug().Msgf("caching result for %s", domain)
 		c.cache.Set(domain, live, cache.DefaultExpiration)

@@ -33,7 +33,7 @@ jobs:
           username: ${{ github.repository_owner }}
           password: ${{ secrets.GH_PAT }}
           registry: ghcr.io
-      - uses: sigstore/cosign-installer@v2.8.1
+      - uses: sigstore/cosign-installer@v3.0.1
       - uses: anchore/sbom-action/download-syft@v0.13.3
       - uses: goreleaser/goreleaser-action@v4
         with:

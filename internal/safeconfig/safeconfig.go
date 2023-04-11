@@ -14,6 +14,23 @@ type Domain struct {
 	Host string `yaml:"host,omitempty"`
 }
 
+type domainAlias Domain
+
+func (a *Domain) UnmarshalYAML(unmarshal func(interface{}) error) error {
+	var d domainAlias
+	if err := unmarshal(&d); err == nil {
+		*a = Domain(d)
+		return nil
+	}
+
+	var ds string
+	if err := unmarshal(&ds); err != nil {
+		return err
+	}
+	*a = Domain{Name: ds}
+	return nil
+}
+
 type SafeConfig struct {
 	Domains []Domain `yaml:"domains"`
 }

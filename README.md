@@ -39,7 +39,7 @@ You can configure `domain_exporter` to always export metrics for specific
 domains. Create configuration file (`host` field is optional):
 ```yaml
 domains:
-- name: google.com
+- google.com
 - name: reddit.com
   host: whois.godaddy.com
 ```

@@ -7,6 +7,7 @@ import (
 	"time"
 
 	"github.com/caarlos0/domain_exporter/internal/client"
+	"github.com/caarlos0/domain_exporter/internal/safeconfig"
 	"github.com/prometheus/client_golang/prometheus"
 	"github.com/rs/zerolog/log"
 )
@@ -14,7 +15,7 @@ import (
 type domainCollector struct {
 	mutex   sync.Mutex
 	client  client.Client
-	domains []string
+	domains []safeconfig.Domain
 	timeout time.Duration
 
 	expiryDays    *prometheus.Desc
@@ -23,7 +24,7 @@ type domainCollector struct {
 }
 
 // NewDomainCollector returns a domain collector.
-func NewDomainCollector(client client.Client, domains ...string) prometheus.Collector {
+func NewDomainCollector(client client.Client, domains ...safeconfig.Domain) prometheus.Collector {
 	const namespace = "domain"
 	const subsystem = ""
 	return &domainCollector{
@@ -68,7 +69,7 @@ func (c *domainCollector) Collect(ch chan<- prometheus.Metric) {
 
 	for _, domain := range c.domains {
 		start := time.Now()
-		date, err := c.client.ExpireTime(ctx, domain)
+		date, err := c.client.ExpireTime(ctx, domain.Name, domain.Host)
 		if err != nil {
 			log.Error().Err(err).Msgf("failed to probe %s", domain)
 		}
@@ -78,19 +79,19 @@ func (c *domainCollector) Collect(ch chan<- prometheus.Metric) {
 			c.probeSuccess,
 			prometheus.GaugeValue,
 			boolToFloat(success),
-			domain,
+			domain.Name,
 		)
 		ch <- prometheus.MustNewConstMetric(
 			c.expiryDays,
 			prometheus.GaugeValue,
 			math.Floor(time.Until(date).Hours()/24),
-			domain,
+			domain.Name,
 		)
 		ch <- prometheus.MustNewConstMetric(
 			c.probeDuration,
 			prometheus.GaugeValue,
 			time.Since(start).Seconds(),
-			domain,
+			domain.Name,
 		)
 	}
 }

@@ -4,3 +4,4 @@ dist/
 bin/
 .idea/*
 domain_exporter
+config.yaml

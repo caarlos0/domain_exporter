@@ -71,7 +71,7 @@ func TestSafeConfig_Reload(t *testing.T) {
 		{
 			name: "Vaidd yaml",
 			cfg: SafeConfig{
-				Domains: []string{"google.com"},
+				Domains: []Domain{{Name: "google.com", Host: ""}},
 			},
 			fileContent: `
 domains:

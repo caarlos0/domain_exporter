@@ -9,8 +9,13 @@ import (
 	"gopkg.in/yaml.v3"
 )
 
+type Domain struct {
+	Name string `yaml:"name"`
+	Host string `yaml:"host,omitempty"`
+}
+
 type SafeConfig struct {
-	Domains []string `yaml:"domains"`
+	Domains []Domain `yaml:"domains"`
 }
 
 func New(pathToFile string) (SafeConfig, error) {

@@ -35,7 +35,7 @@ func TestRdapParsing(t *testing.T) {
 		t.Run(tt.domain, func(t *testing.T) {
 			t.Parallel()
 			is := is.New(t)
-			expiry, err := NewClient().ExpireTime(context.Background(), tt.domain)
+			expiry, err := NewClient().ExpireTime(context.Background(), tt.domain, "")
 			if tt.err == "" {
 				is.NoErr(err)                           // should not err
 				is.True(time.Since(expiry).Hours() < 0) // domain must not be expired

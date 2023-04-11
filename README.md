@@ -36,11 +36,12 @@ Alerting rules examples can be found on the
 folder.
 
 You can configure `domain_exporter` to always export metrics for specific
-domains. Create configuration file:
+domains. Create configuration file (`host` field is optional):
 ```yaml
 domains:
-- google.com
-- reddit.com
+- name: google.com
+- name: reddit.com
+  host: whois.godaddy.com
 ```
 And pass file path as argument to `domain_exporter`:
 ```

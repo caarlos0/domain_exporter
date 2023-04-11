@@ -141,6 +141,7 @@ func probeHandler(cli client.Client) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		params := r.URL.Query()
 		target := strings.TrimPrefix(params.Get("target"), "www.")
+		host := params.Get("host")
 		if target == "" {
 			log.Error().Msg("target parameter missing")
 			http.Error(w, "target parameter is missing", http.StatusBadRequest)
@@ -148,7 +149,7 @@ func probeHandler(cli client.Client) http.HandlerFunc {
 		}
 
 		registry := prometheus.NewRegistry()
-		registry.MustRegister(collector.NewDomainCollector(cli, target))
+		registry.MustRegister(collector.NewDomainCollector(cli, safeconfig.Domain{Name: target, Host: host}))
 
 		promhttp.HandlerFor(registry, promhttp.HandlerOpts{}).ServeHTTP(w, r)
 	}

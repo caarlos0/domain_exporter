@@ -7,11 +7,11 @@ import (
 
 type multiClient []Client
 
-func (clients multiClient) ExpireTime(ctx context.Context, domain string) (time.Time, error) {
+func (clients multiClient) ExpireTime(ctx context.Context, domain string, host string) (time.Time, error) {
 	var t time.Time
 	var err error
 	for _, client := range clients {
-		t, err = client.ExpireTime(ctx, domain)
+		t, err = client.ExpireTime(ctx, domain, host)
 		if err == nil {
 			break
 		}

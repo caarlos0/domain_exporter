@@ -5,16 +5,17 @@ import (
 	"time"
 
 	"github.com/caarlos0/domain_exporter/internal/client"
+	"github.com/caarlos0/domain_exporter/internal/safeconfig"
 	"github.com/rs/zerolog/log"
 )
 
 type Refresher struct {
 	ticker  *time.Ticker
 	client  client.Client
-	domains []string
+	domains []safeconfig.Domain
 }
 
-func New(interval time.Duration, client client.Client, domains ...string) Refresher {
+func New(interval time.Duration, client client.Client, domains ...safeconfig.Domain) Refresher {
 	ticker := time.NewTicker(interval)
 	return Refresher{
 		ticker:  ticker,
@@ -45,7 +46,7 @@ func (r Refresher) Refresh(ctx context.Context) {
 	defer cancel()
 
 	for _, domain := range r.domains {
-		if _, err := r.client.ExpireTime(ctx, domain); err != nil {
+		if _, err := r.client.ExpireTime(ctx, domain.Name, domain.Host); err != nil {
 			log.Error().Err(err).Msgf("failed to get expire time for %s", domain)
 		}
 	}

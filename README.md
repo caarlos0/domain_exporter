@@ -37,34 +37,40 @@ folder.
 
 You can configure `domain_exporter` to always export metrics for specific
 domains. Create configuration file (`host` field is optional):
+
 ```yaml
 domains:
 - google.com
 - name: reddit.com
   host: whois.godaddy.com
 ```
+
 And pass file path as argument to `domain_exporter`:
-```
+
+```bash
 domain_exporter --config=domains.yaml
 ```
+
+Notice that if you do that, results are cached, and you should change your job 
+`metrics_path` to `/metrics` instead.
 
 ## Install
 
 **homebrew**:
 
-```sh
+```bash
 brew install caarlos0/tap/domain_exporter
 ```
 
 **docker**:
 
-```sh
+```bash
 docker run --rm -p 9222:9222 caarlos0/domain_exporter
 ```
 
 **apt**:
 
-```sh
+```bash
 echo 'deb [trusted=yes] https://repo.caarlos0.dev/apt/ /' | sudo tee /etc/apt/sources.list.d/caarlos0.list
 sudo apt update
 sudo apt install domain_exporter

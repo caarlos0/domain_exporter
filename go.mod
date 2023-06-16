@@ -8,7 +8,7 @@ require (
 	github.com/matryer/is v1.4.1
 	github.com/openrdap/rdap v0.9.1
 	github.com/patrickmn/go-cache v2.1.0+incompatible
-	github.com/prometheus/client_golang v1.15.1
+	github.com/prometheus/client_golang v1.16.0
 	github.com/rs/zerolog v1.29.1
 	golang.org/x/net v0.11.0
 	gopkg.in/yaml.v3 v3.0.1
@@ -30,7 +30,7 @@ require (
 	github.com/mitchellh/go-homedir v1.1.0 // indirect
 	github.com/prometheus/client_model v0.3.0 // indirect
 	github.com/prometheus/common v0.42.0 // indirect
-	github.com/prometheus/procfs v0.9.0 // indirect
+	github.com/prometheus/procfs v0.10.1 // indirect
 	github.com/rogpeppe/go-internal v1.10.0 // indirect
 	github.com/saintfish/chardet v0.0.0-20120816061221-3af4cd4741ca // indirect
 	github.com/xhit/go-str2duration/v2 v2.1.0 // indirect

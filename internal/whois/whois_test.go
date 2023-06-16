@@ -47,12 +47,18 @@ func TestWhoisParsing(t *testing.T) {
 			t.Parallel()
 			is := is.New(t)
 
-			ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
+			ctx, cancel := context.WithTimeout(context.Background(), 2*time.Second)
 			t.Cleanup(cancel)
 
 			expiry, err := NewClient().ExpireTime(ctx, tt.domain, tt.host)
-			if err != nil && strings.Contains(err.Error(), "i/o timeout") {
-				t.Skip("timeout")
+			if err != nil {
+				errs := err.Error()
+				if strings.Contains(errs, "i/o timeout") {
+					t.Skip("timeout")
+				}
+				if strings.Contains(errs, "Too may requests") {
+					t.Skip("rate limit")
+				}
 			}
 			if tt.err == "" {
 				is.NoErr(err)                           // expected no errors

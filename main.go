@@ -11,7 +11,7 @@ import (
 	"syscall"
 	"time"
 
-	"github.com/alecthomas/kingpin"
+	"github.com/alecthomas/kingpin/v2"
 	"github.com/caarlos0/domain_exporter/internal/client"
 	"github.com/caarlos0/domain_exporter/internal/collector"
 	"github.com/caarlos0/domain_exporter/internal/rdap"

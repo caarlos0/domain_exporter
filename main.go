@@ -31,6 +31,7 @@ var (
 	debug      = kingpin.Flag("debug", "show debug logs").Default("false").Bool()
 	format     = kingpin.Flag("logFormat", "log format to use").Default("console").Enum("json", "console")
 	interval   = kingpin.Flag("cache", "time to cache the result of whois calls").Default("2h").Duration()
+	timeout    = kingpin.Flag("timeout", "timeout for each domain").Default("10s").Duration()
 	configFile = kingpin.Flag("config", "configuration file").String()
 	version    = "dev"
 )
@@ -74,12 +75,12 @@ func main() {
 		wg.Add(1)
 		go func() {
 			defer wg.Done()
-			fresh := refresher.New(*interval, cachedClient, cfg.Domains...)
+			fresh := refresher.New(*interval, cachedClient, *timeout*time.Duration(len(cfg.Domains)), cfg.Domains...)
 			defer fresh.Stop()
 			fresh.Run(ctx)
 		}()
 
-		domainCollector := collector.NewDomainCollector(cachedClient, cfg.Domains...)
+		domainCollector := collector.NewDomainCollector(cachedClient, *timeout*time.Duration(len(cfg.Domains)), cfg.Domains...)
 		prometheus.DefaultRegisterer.MustRegister(domainCollector)
 	}
 
@@ -149,7 +150,7 @@ func probeHandler(cli client.Client) http.HandlerFunc {
 		}
 
 		registry := prometheus.NewRegistry()
-		registry.MustRegister(collector.NewDomainCollector(cli, safeconfig.Domain{Name: target, Host: host}))
+		registry.MustRegister(collector.NewDomainCollector(cli, *timeout, safeconfig.Domain{Name: target, Host: host}))
 
 		promhttp.HandlerFor(registry, promhttp.HandlerOpts{}).ServeHTTP(w, r)
 	}

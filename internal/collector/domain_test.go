@@ -7,6 +7,7 @@ import (
 	"regexp"
 	"strings"
 	"testing"
+	"time"
 
 	"github.com/caarlos0/domain_exporter/internal/client"
 	"github.com/caarlos0/domain_exporter/internal/rdap"
@@ -20,7 +21,8 @@ import (
 func TestCollectorError(t *testing.T) {
 	is := is.New(t)
 	multi := client.NewMultiClient(rdap.NewClient(), whois.NewClient())
-	testCollector(t, NewDomainCollector(multi, safeconfig.Domain{Name: "fake.foo", Host: ""}), func(t *testing.T, status int, body string) {
+	testCollector(t, NewDomainCollector(multi, time.Second, safeconfig.Domain{Name: "fake.foo", Host: ""}), func(t *testing.T, status int, body string) {
+		is := is.New(t)
 		is.Equal(200, status)                                                          // request should succeed
 		is.True(strings.Contains(body, "domain_probe_success{domain=\"fake.foo\"} 0")) // probe should succeed
 		is.True(strings.Contains(body, "domain_expiry_days{domain=\"fake.foo\"} -1"))  // should contain domain expiry
@@ -30,11 +32,16 @@ func TestCollectorError(t *testing.T) {
 func TestNotExpired(t *testing.T) {
 	is := is.New(t)
 	multi := client.NewMultiClient(rdap.NewClient(), whois.NewClient())
-	testCollector(t, NewDomainCollector(multi, safeconfig.Domain{Name: "goreleaser.com", Host: ""}), func(t *testing.T, status int, body string) {
-		is.Equal(200, status)                                                                                   // srequest hould succeed
-		is.True(strings.Contains(body, "domain_probe_success{domain=\"goreleaser.com\"} 1"))                    // probe should succeed
-		is.True(regexp.MustCompile(`domain_expiry_days{domain=\"goreleaser.com\"} \d+`).FindString(body) != "") // should contain domain expiry
-	})
+	testCollector(
+		t,
+		NewDomainCollector(multi, time.Second, safeconfig.Domain{Name: "goreleaser.com", Host: ""}),
+		func(t *testing.T, status int, body string) {
+			is := is.New(t)
+			is.Equal(200, status)                                                                                   // request should succeed
+			is.True(strings.Contains(body, "domain_probe_success{domain=\"goreleaser.com\"} 1"))                    // probe should succeed
+			is.True(regexp.MustCompile(`domain_expiry_days{domain=\"goreleaser.com\"} \d+`).FindString(body) != "") // should contain domain expiry
+		},
+	)
 }
 
 func testCollector(t *testing.T, collector prometheus.Collector, checker func(t *testing.T, status int, body string)) {

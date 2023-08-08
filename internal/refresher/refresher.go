@@ -13,14 +13,16 @@ type Refresher struct {
 	ticker  *time.Ticker
 	client  client.Client
 	domains []safeconfig.Domain
+	timeout time.Duration
 }
 
-func New(interval time.Duration, client client.Client, domains ...safeconfig.Domain) Refresher {
+func New(interval time.Duration, client client.Client, timeout time.Duration, domains ...safeconfig.Domain) Refresher {
 	ticker := time.NewTicker(interval)
 	return Refresher{
 		ticker:  ticker,
 		client:  client,
 		domains: domains,
+		timeout: timeout,
 	}
 }
 
@@ -42,7 +44,7 @@ func (r Refresher) Run(ctx context.Context) {
 }
 
 func (r Refresher) Refresh(ctx context.Context) {
-	ctx, cancel := context.WithTimeout(ctx, time.Second*10)
+	ctx, cancel := context.WithTimeout(ctx, r.timeout)
 	defer cancel()
 
 	for _, domain := range r.domains {

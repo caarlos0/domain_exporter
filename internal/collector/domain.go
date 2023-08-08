@@ -24,13 +24,13 @@ type domainCollector struct {
 }
 
 // NewDomainCollector returns a domain collector.
-func NewDomainCollector(client client.Client, domains ...safeconfig.Domain) prometheus.Collector {
+func NewDomainCollector(client client.Client, timeout time.Duration, domains ...safeconfig.Domain) prometheus.Collector {
 	const namespace = "domain"
 	const subsystem = ""
 	return &domainCollector{
 		client:  client,
 		domains: domains,
-		timeout: time.Second * 10,
+		timeout: timeout,
 		expiryDays: prometheus.NewDesc(
 			prometheus.BuildFQName(namespace, subsystem, "expiry_days"),
 			"time in days until the domain expires",

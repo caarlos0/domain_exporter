@@ -22,7 +22,7 @@ jobs:
       - uses: actions/setup-go@v4
         with:
           go-version: stable
-      - uses: docker/setup-qemu-action@v2
+      - uses: docker/setup-qemu-action@v3
       - uses: docker/login-action@v2
         with:
           username: caarlos0

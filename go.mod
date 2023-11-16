@@ -3,7 +3,7 @@ module github.com/caarlos0/domain_exporter
 go 1.20
 
 require (
-	github.com/alecthomas/kingpin/v2 v2.3.2
+	github.com/alecthomas/kingpin/v2 v2.4.0
 	github.com/domainr/whois v0.1.0
 	github.com/matryer/is v1.4.1
 	github.com/openrdap/rdap v0.9.1

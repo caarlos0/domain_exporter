@@ -39,7 +39,7 @@ func NewDomainCollector(client client.Client, timeout time.Duration, domains ...
 		),
 		probeSuccess: prometheus.NewDesc(
 			prometheus.BuildFQName(namespace, subsystem, "probe_success"),
-			"wether the probe was successful or not",
+			"whether the probe was successful or not",
 			[]string{"domain"},
 			nil,
 		),

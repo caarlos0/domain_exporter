@@ -124,7 +124,12 @@ func (c whoisClient) request(ctx context.Context, domain, host string) (string, 
 	if err != nil {
 		return "", fmt.Errorf("failed to fetch whois request: %w", err)
 	}
-	body := string(resp.Body)
+	respText, err := resp.Text()
+	if err != nil {
+		return "", fmt.Errorf("failed to parse response body into text: %w", err)
+	}
+
+	body := string(respText)
 
 	if host == "" {
 		// do not recurse

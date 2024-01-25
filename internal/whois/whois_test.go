@@ -40,13 +40,14 @@ func TestWhoisParsing(t *testing.T) {
 		{domain: "GOOGLE.RS", host: "", err: ""},
 		{domain: "google.co.th", host: "", err: ""},
 		{domain: "google.fi", host: "", err: ""},
+		{domain: "google.vn", host: "whois.net.vn", err: ""},
 	} {
 		tt := tt
 		t.Run(tt.domain, func(t *testing.T) {
 			t.Parallel()
 			is := is.New(t)
 
-			ctx, cancel := context.WithTimeout(context.Background(), 2*time.Second)
+			ctx, cancel := context.WithTimeout(context.Background(), 3*time.Second)
 			t.Cleanup(cancel)
 
 			expiry, err := NewClient().ExpireTime(ctx, tt.domain, tt.host)

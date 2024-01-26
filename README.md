@@ -41,8 +41,8 @@ domains. Create configuration file (`host` field is optional):
 ```yaml
 domains:
 - google.com
-- name: reddit.com
-  host: whois.godaddy.com
+- name: reddit.com        
+  host: whois.godaddy.com # <-- custom whois server for reddit.com
 ```
 
 And pass file path as argument to `domain_exporter`:

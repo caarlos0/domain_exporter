@@ -48,7 +48,7 @@ func TestWhoisParsing(t *testing.T) {
 			t.Parallel()
 			is := is.New(t)
 
-			ctx, cancel := context.WithTimeout(context.Background(), 3*time.Second)
+			ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
 			t.Cleanup(cancel)
 
 			expiry, err := NewClient().ExpireTime(ctx, tt.domain, tt.host)

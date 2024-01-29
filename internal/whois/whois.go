@@ -53,6 +53,7 @@ var (
 		"02 Jan 2006",                 // .co.th
 		"2.1.2006 15:04:05",           // .fi
 		"02-01-2006",                  // .hk
+		"2006-Jan-02.",                // .com.tr
 	}
 
 	// nolint: lll
@@ -67,6 +68,7 @@ var (
 		"Expiration Time",
 		"Expiry date",
 		"Expiry",
+		"Expires on\\.{14}:",
 		"Expires On",
 		"expires\\.{12}",
 		"expires",

@@ -54,6 +54,7 @@ var (
 		"2.1.2006 15:04:05",           // .fi
 		"02-01-2006",                  // .hk
 		"2006-Jan-02.",                // .com.tr
+		"2006-01-02 15:04:05 (GMT+0)", // .kz
 	}
 
 	// nolint: lll
@@ -77,6 +78,7 @@ var (
 		"Renewal Date",
 		"Record expires on",
 		"Exp date",
+		"Domain expired\\.*:",
 	}, "|") + `)\]?:?\s?(.*)`)
 	registrarRE = regexp.MustCompile(`(?i)Registrar WHOIS Server: (.*)`)
 )

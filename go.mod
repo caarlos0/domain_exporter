@@ -8,7 +8,7 @@ require (
 	github.com/matryer/is v1.4.1
 	github.com/openrdap/rdap v0.9.1
 	github.com/patrickmn/go-cache v2.1.0+incompatible
-	github.com/prometheus/client_golang v1.19.0
+	github.com/prometheus/client_golang v1.19.1
 	github.com/rs/zerolog v1.32.0
 	golang.org/x/net v0.25.0
 	gopkg.in/yaml.v3 v3.0.1

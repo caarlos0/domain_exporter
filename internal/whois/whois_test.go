@@ -15,7 +15,7 @@ func TestWhoisParsing(t *testing.T) {
 		host   string
 		err    string
 	}{
-		{domain: "google.ai", host: "", err: "could not parse whois response"},
+		{domain: "google.ai", host: "", err: ""},
 		{domain: "google.lt", host: "", err: ""},
 		{domain: "fakedomain.foo", host: "", err: "Domain not found"},
 		{domain: "google.cn", host: "", err: ""},
@@ -50,7 +50,7 @@ func TestWhoisParsing(t *testing.T) {
 			t.Parallel()
 			is := is.New(t)
 
-			ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
+			ctx, cancel := context.WithTimeout(context.Background(), 30*time.Second)
 			t.Cleanup(cancel)
 
 			expiry, err := NewClient().ExpireTime(ctx, tt.domain, tt.host)

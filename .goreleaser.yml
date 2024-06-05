@@ -1,3 +1,5 @@
+# yaml-language-server: $schema=https://goreleaser.com/static/schema-pro.json
+version: 2
 variables:
   description: Exports the expiration time of your domains in the Prometheus format.
 
@@ -18,4 +20,4 @@ includes:
       url: https://raw.githubusercontent.com/caarlos0/goreleaserfiles/main/sbom.yml
 
 furies:
-- account: caarlos0
+  - account: caarlos0

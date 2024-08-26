@@ -1,5 +1,5 @@
-ALERT DomainExpiring
-  IF domain_expiry_days < 30
+ALERT DomainExpiringLessThen30Days
+  IF domain_expiry_days != -1 AND domain_expiry_days < 30 AND domain_expiry_days > 5
   FOR 1h
   LABELS {
     severity = "warning",
@@ -9,8 +9,8 @@ ALERT DomainExpiring
     summary = "{{ $labels.domain }}: domain is expiring",
   }
 
-ALERT DomainExpiring
-  IF domain_expiry_days < 5
+ALERT DomainExpiringLessThen5Days
+  IF domain_expiry_days != -1 AND domain_expiry_days <= 5
   FOR 1h
   LABELS {
     severity = "page",
@@ -18,4 +18,15 @@ ALERT DomainExpiring
   ANNOTATIONS {
     description = "Domain {{ $labels.domain }} will expire in less than 5 days",
     summary = "{{ $labels.domain }}: domain is expiring",
+  }
+
+ALERT DomainProbeFailure
+  IF domain_probe_success == 0
+  FOR 1h
+  LABELS {
+    severity = "warning",
+  }
+  ANNOTATIONS {
+    description = "Domain {{ $labels.domain }} is not valid. Cannot probe",
+    summary = "{{ $labels.domain }}: cannot probe",
   }

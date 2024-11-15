@@ -19,7 +19,7 @@ jobs:
       - run: make setup
       - run: make test
       - run: git diff
-      - uses: codecov/codecov-action@v4
+      - uses: codecov/codecov-action@v5
         with:
           file: ./coverage.txt
   dependabot:

@@ -1,8 +1,8 @@
 FROM golang as builder
 WORKDIR /code
-ADD go.mod go.sum /code/
+COPY go.mod go.sum /code/
 RUN go mod download
-ADD . .
+COPY  . .
 RUN go build -o /domain_exporter main.go
 
 FROM gcr.io/distroless/base

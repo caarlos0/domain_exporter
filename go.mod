@@ -1,6 +1,6 @@
 module github.com/caarlos0/domain_exporter
 
-go 1.20
+go 1.23.4
 
 require (
 	github.com/alecthomas/kingpin/v2 v2.4.0

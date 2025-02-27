@@ -27,7 +27,7 @@ func TestWhoisParsing(t *testing.T) {
 		{domain: "google.sg", host: "", err: ""},
 		{domain: "google.sk", host: "", err: ""},
 		{domain: "google.ro", host: "", err: ""},
-		{domain: "google.pt", host: "", err: "i/o timeout"},
+		{domain: "google.pt", host: "", err: ""},
 		{domain: "microsoft.it", host: "", err: ""},
 		{domain: "google.pw", host: "", err: ""},
 		{domain: "google.co.id", host: "", err: ""},

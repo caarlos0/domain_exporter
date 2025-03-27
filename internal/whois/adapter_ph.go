@@ -2,6 +2,7 @@ package whois
 
 import (
 	"fmt"
+	"html"
 	"net/url"
 	"strings"
 
@@ -32,23 +33,33 @@ func generatePhWhoisRequestUrl(query string) string {
 	return "https://whois.dot.ph/whois.php?search=" + url.QueryEscape(query)
 }
 
-// Basic HTML cleanup similar to .vn adapter
+// Parses the WHOIS response from whois.dot.ph
 func parsePhWhoisResponseBody(bodyContent []byte) ([]byte, error) {
 	resBodyString := string(bodyContent)
 
+	// Debug: Print raw response for troubleshooting
+	fmt.Println("Raw WHOIS Response:", resBodyString)
+
+	// Extract WHOIS details inside <pre> tags
 	start := strings.Index(resBodyString, "<pre>")
 	end := strings.Index(resBodyString, "</pre>")
+
 	if start == -1 || end == -1 {
-		return nil, fmt.Errorf("failed to find <pre> tags in response body")
+		return nil, fmt.Errorf("failed to find <pre> tags in response body: %s", resBodyString)
 	}
+
 	resBodyString = resBodyString[start+5 : end]
 
-	htmlTags := []string{"<br>", "</br>", "<b>", "</b>"}
+	// Cleanup unwanted HTML tags and special characters
+	htmlTags := []string{"<br>", "</br>", "<b>", "</b>", "&nbsp;", "&lt;", "&gt;", "&amp;"}
 	for _, tag := range htmlTags {
 		resBodyString = strings.ReplaceAll(resBodyString, tag, "")
 	}
 
-	resBodyString = strings.ReplaceAll(resBodyString, "\t", "")
+	// Decode HTML entities (e.g., &quot;, &#8212;)
+	resBodyString = html.UnescapeString(resBodyString)
+
+	// Remove excessive whitespace
 	resBodyString = strings.TrimSpace(resBodyString)
 
 	return []byte(resBodyString), nil

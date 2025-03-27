@@ -1,23 +1,23 @@
 package whois
 
 import (
+	"fmt"
 	"net/url"
 	"strings"
 
 	"github.com/domainr/whois"
 )
 
-// Adapter for whois.dot.ph
 type phAdapter struct{}
 
 func (a *phAdapter) Prepare(req *whois.Request) error {
 	req.URL = generatePhWhoisRequestUrl(req.Query)
-	req.Body = nil // GET request, no body needed
+	req.Body = nil
 	return nil
 }
 
 func (a *phAdapter) Text(res *whois.Response) ([]byte, error) {
-	return parsePhWhoisResponseBody(res.Body), nil
+	return parsePhWhoisResponseBody(res.Body)
 }
 
 func init() {
@@ -33,26 +33,23 @@ func generatePhWhoisRequestUrl(query string) string {
 }
 
 // Basic HTML cleanup similar to .vn adapter
-func parsePhWhoisResponseBody(bodyContent []byte) []byte {
+func parsePhWhoisResponseBody(bodyContent []byte) ([]byte, error) {
 	resBodyString := string(bodyContent)
 
-	// Extract <pre> block (simple substring match)
 	start := strings.Index(resBodyString, "<pre>")
 	end := strings.Index(resBodyString, "</pre>")
 	if start == -1 || end == -1 {
-		return nil
+		return nil, fmt.Errorf("failed to find <pre> tags in response body")
 	}
 	resBodyString = resBodyString[start+5 : end]
 
-	// Remove HTML tags
 	htmlTags := []string{"<br>", "</br>", "<b>", "</b>"}
 	for _, tag := range htmlTags {
 		resBodyString = strings.ReplaceAll(resBodyString, tag, "")
 	}
 
-	// Basic cleanup
 	resBodyString = strings.ReplaceAll(resBodyString, "\t", "")
 	resBodyString = strings.TrimSpace(resBodyString)
 
-	return []byte(resBodyString)
+	return []byte(resBodyString), nil
 }

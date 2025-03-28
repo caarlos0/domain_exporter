@@ -1,3 +1,5 @@
+package whois
+
 import (
 	"fmt"
 	"html"

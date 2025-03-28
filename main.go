@@ -87,7 +87,7 @@ func main() {
 	http.Handle("/metrics", promhttp.Handler())
 	http.HandleFunc("/probe", probeHandler(cli))
 	http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
-		fmt.Fprintf(
+		_, _ = fmt.Fprintf(
 			w, `
 			<html>
 			<head><title>Domain Exporter</title></head>

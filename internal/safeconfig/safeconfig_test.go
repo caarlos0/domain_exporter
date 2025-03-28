@@ -83,20 +83,28 @@ domains:
 		t.Run(tt.name, func(t *testing.T) {
 			file, err := os.CreateTemp(os.TempDir(), "temp.*.yaml")
 			if err != nil {
-				log.Fatal().Err(err)
+				t.Fatal(err)
 			}
 			f, err := os.Create(file.Name())
 			if err != nil {
-				log.Fatal().Err(err)
+				t.Fatal(err)
 			}
-			defer f.Close()
+			t.Cleanup(func() {
+				if err := f.Close(); err != nil {
+					t.Fatal(err)
+				}
+			})
 			log.Info().Msg(tt.fileContent)
-			_, err2 := f.WriteString(tt.fileContent)
 
-			if err2 != nil {
-				log.Fatal().Err(err)
+			_, err = f.WriteString(tt.fileContent)
+			if err != nil {
+				t.Fatal(err)
 			}
-			defer os.Remove(file.Name())
+			t.Cleanup(func() {
+				if err := os.Remove(file.Name()); err != nil {
+					t.Fatal(err)
+				}
+			})
 
 			cfg, err := New(file.Name())
 			if (err != nil) != tt.wantErr {

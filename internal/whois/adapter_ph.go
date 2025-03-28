@@ -1,8 +1,7 @@
-package whois
-
 import (
 	"fmt"
 	"html"
+	"log"
 	"net/url"
 	"strings"
 
@@ -37,14 +36,15 @@ func generatePhWhoisRequestUrl(query string) string {
 func parsePhWhoisResponseBody(bodyContent []byte) ([]byte, error) {
 	resBodyString := string(bodyContent)
 
-	// Debug: Print raw response for troubleshooting
+	// Always print raw response
 	log.Println("Raw WHOIS Response:", resBodyString)
+
 	// Extract WHOIS details inside <pre> tags
 	start := strings.Index(resBodyString, "<pre>")
 	end := strings.Index(resBodyString, "</pre>")
 
 	if start == -1 || end == -1 {
-		return nil, fmt.Errorf("failed to find <pre> tags in response body: %s", resBodyString)
+		return nil, fmt.Errorf("failed to find <pre> tags in response body")
 	}
 
 	resBodyString = resBodyString[start+5 : end]

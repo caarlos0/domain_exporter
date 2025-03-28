@@ -10,7 +10,7 @@ require (
 	github.com/patrickmn/go-cache v2.1.0+incompatible
 	github.com/prometheus/client_golang v1.21.1
 	github.com/rs/zerolog v1.34.0
-	golang.org/x/net v0.37.0
+	golang.org/x/net v0.38.0
 	gopkg.in/yaml.v3 v3.0.1
 )
 

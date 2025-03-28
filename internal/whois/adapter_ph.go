@@ -38,8 +38,7 @@ func parsePhWhoisResponseBody(bodyContent []byte) ([]byte, error) {
 	resBodyString := string(bodyContent)
 
 	// Debug: Print raw response for troubleshooting
-	fmt.Println("Raw WHOIS Response:", resBodyString)
-
+	log.Println("Raw WHOIS Response:", resBodyString)
 	// Extract WHOIS details inside <pre> tags
 	start := strings.Index(resBodyString, "<pre>")
 	end := strings.Index(resBodyString, "</pre>")

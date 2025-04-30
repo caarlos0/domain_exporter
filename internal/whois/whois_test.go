@@ -11,13 +11,14 @@ import (
 
 func TestWhoisParsing(t *testing.T) {
 	for _, tt := range []struct {
-		domain string
-		host   string
-		err    string
+		domain  string
+		host    string
+		err     string
+		expired bool
 	}{
 		{domain: "google.ai", host: "", err: ""},
 		{domain: "google.lt", host: "", err: ""},
-		{domain: "fakedomain.foo", host: "", err: "Domain not found"},
+		{domain: "fakedomain.foo", host: "", err: "no such host"},
 		{domain: "google.cn", host: "", err: ""},
 		{domain: "google.com", host: "", err: ""},
 		{domain: "google.de", host: "", err: "could not parse whois response"},
@@ -28,7 +29,7 @@ func TestWhoisParsing(t *testing.T) {
 		{domain: "google.sk", host: "", err: ""},
 		{domain: "google.ro", host: "", err: ""},
 		{domain: "google.pt", host: "", err: ""},
-		{domain: "microsoft.it", host: "", err: ""},
+		{domain: "microsoft.it", host: "whois.nic.it", err: "", expired: true},
 		{domain: "google.pw", host: "", err: ""},
 		{domain: "google.co.id", host: "", err: ""},
 		{domain: "google.kr", host: "", err: ""},
@@ -45,6 +46,7 @@ func TestWhoisParsing(t *testing.T) {
 		{domain: "google.com.tr", host: "", err: ""},
 		{domain: "google.com.ru", host: "whois.nic.ru", err: ""},
 		{domain: "nic.kz", host: "", err: ""},
+		{domain: "google.io", host: "", err: ""},
 	} {
 		tt := tt
 		t.Run(tt.domain, func(t *testing.T) {
@@ -65,8 +67,12 @@ func TestWhoisParsing(t *testing.T) {
 				}
 			}
 			if tt.err == "" {
-				is.NoErr(err)                           // expected no errors
-				is.True(time.Since(expiry).Hours() < 0) // domain must not be expired
+				is.NoErr(err) // expected no errors
+				if tt.expired {
+					is.True(time.Since(expiry).Hours() > 0) // domain must be expired
+				} else {
+					is.True(time.Since(expiry).Hours() < 0) // domain must not be expired
+				}
 			} else {
 				is.True(err != nil)                            // expected an error
 				is.True(strings.Contains(err.Error(), tt.err)) // expected error to contain message

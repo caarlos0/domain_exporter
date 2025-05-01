@@ -30,9 +30,9 @@ func init() {
 }
 
 // Generate URL for .vn whois request.
-// Query sent to whois.net.vn should go to `/whois.php` route with `act` & `domain` parameters.
+// Query sent to whois.net.vn should go to `/checkdomain.php` route with `act` & `domain` parameters.
 func generateVnWhoisRequestUrl(query string) string {
-	whoisEndpoint := "https://whois.net.vn/whois.php?"
+	whoisEndpoint := "https://whois.net.vn/checkdomain.php?"
 
 	whoisQueryParams := url.Values{}
 	whoisQueryParams.Set("act", "getwhois")

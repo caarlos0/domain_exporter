@@ -1,6 +1,6 @@
 module github.com/caarlos0/domain_exporter
 
-go 1.24
+go 1.24.0
 
 require (
 	github.com/alecthomas/kingpin/v2 v2.4.0
@@ -10,7 +10,7 @@ require (
 	github.com/patrickmn/go-cache v2.1.0+incompatible
 	github.com/prometheus/client_golang v1.23.0
 	github.com/rs/zerolog v1.34.0
-	golang.org/x/net v0.43.0
+	golang.org/x/net v0.46.0
 	gopkg.in/yaml.v3 v3.0.1
 )
 
@@ -31,8 +31,8 @@ require (
 	github.com/saintfish/chardet v0.0.0-20120816061221-3af4cd4741ca // indirect
 	github.com/xhit/go-str2duration/v2 v2.1.0 // indirect
 	github.com/zonedb/zonedb v1.0.3544 // indirect
-	golang.org/x/crypto v0.41.0 // indirect
-	golang.org/x/sys v0.35.0 // indirect
-	golang.org/x/text v0.28.0 // indirect
+	golang.org/x/crypto v0.43.0 // indirect
+	golang.org/x/sys v0.37.0 // indirect
+	golang.org/x/text v0.30.0 // indirect
 	google.golang.org/protobuf v1.36.6 // indirect
 )

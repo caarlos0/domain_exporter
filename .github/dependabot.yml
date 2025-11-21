@@ -1,32 +1,34 @@
 version: 2
 updates:
-- package-ecosystem: "gomod"
-  directory: "/"
-  schedule:
-    interval: "daily"
-    time: "08:00"
-  labels:
-    - "dependencies"
-  commit-message:
-    prefix: "feat"
-    include: "scope"
-- package-ecosystem: "github-actions"
-  directory: "/"
-  schedule:
-    interval: "daily"
-    time: "08:00"
-  labels:
-    - "dependencies"
-  commit-message:
-    prefix: "chore"
-    include: "scope"
-- package-ecosystem: "docker"
-  directory: "/"
-  schedule:
-    interval: "daily"
-    time: "08:00"
-  labels:
-    - "dependencies"
-  commit-message:
-    prefix: "feat"
-    include: "scope"
+  - package-ecosystem: "gomod"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+      day: "monday"
+      time: "05:00"
+      timezone: "America/New_York"
+    labels:
+      - "dependencies"
+    commit-message:
+      prefix: "chore"
+      include: "scope"
+    groups:
+      go:
+        patterns:
+          - "*"
+  - package-ecosystem: "github-actions"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+      day: "monday"
+      time: "05:00"
+      timezone: "America/New_York"
+    labels:
+      - "dependencies"
+    commit-message:
+      prefix: "ci"
+      include: "scope"
+    groups:
+      actions:
+        patterns:
+          - "*"

@@ -6,7 +6,7 @@ import (
 	"testing"
 	"time"
 
-	"github.com/matryer/is"
+	"github.com/stretchr/testify/require"
 )
 
 type clifail int
@@ -24,24 +24,20 @@ func (c clisuccess) ExpireTime(_ context.Context, domain string, host string) (t
 func TestMulti(t *testing.T) {
 	ctx := context.Background()
 	t.Run("first client succeed", func(t *testing.T) {
-		is := is.New(t)
 		expected := time.Now()
 		expire, err := NewMultiClient(clisuccess(expected), clifail(0)).ExpireTime(ctx, "a", "")
-		is.NoErr(err)              // expected no error
-		is.Equal(expected, expire) // expeted the same result
+		require.NoError(t, err)
+		require.Equal(t, expected, expire)
 	})
 	t.Run("last client succeed", func(t *testing.T) {
-		is := is.New(t)
 		expected := time.Now()
 		expire, err := NewMultiClient(clifail(0), clifail(0), clisuccess(expected)).ExpireTime(ctx, "a", "")
-		is.NoErr(err)              // expected no error
-		is.Equal(expected, expire) // expeted the same result
+		require.NoError(t, err)
+		require.Equal(t, expected, expire)
 	})
 	t.Run("no client succeed", func(t *testing.T) {
-		is := is.New(t)
 		expire, err := NewMultiClient(clifail(0), clifail(0), clifail(0)).ExpireTime(ctx, "a", "")
-		is.True(err != nil)           // expected an error
-		is.Equal(err.Error(), "foo")  // expected the correct error msg
-		is.Equal(expire, time.Time{}) // expected a zeroed result
+		require.EqualError(t, err, "foo")
+		require.Equal(t, expire, time.Time{})
 	})
 }

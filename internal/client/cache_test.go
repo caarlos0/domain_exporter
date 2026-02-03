@@ -6,8 +6,8 @@ import (
 	"testing"
 	"time"
 
-	"github.com/matryer/is"
 	cache "github.com/patrickmn/go-cache"
+	"github.com/stretchr/testify/require"
 )
 
 type testClient struct {
@@ -18,8 +18,7 @@ func (f testClient) ExpireTime(_ context.Context, _ string, _ string) (time.Time
 	return *f.result, nil
 }
 
-type errTestClient struct {
-}
+type errTestClient struct{}
 
 func (f errTestClient) ExpireTime(_ context.Context, _ string, _ string) (time.Time, error) {
 	return time.Now(), fmt.Errorf("failed to get domain info blah")
@@ -37,9 +36,8 @@ func TestCachedClient(t *testing.T) {
 	// test getting from out fake client
 	t.Run("get fresh", func(t *testing.T) {
 		res, err := cli.ExpireTime(ctx, domain, host)
-		is := is.New(t)
-		is.NoErr(err)           // expected an error
-		is.Equal(expected, res) // expected the same result
+		require.NoError(t, err)
+		require.Equal(t, expected, res)
 	})
 
 	// here we change the inner fake client result, but the result
@@ -48,9 +46,8 @@ func TestCachedClient(t *testing.T) {
 		oldExpected := expected
 		expected = time.Now()
 		res, err := cli.ExpireTime(ctx, domain, host)
-		is := is.New(t)
-		is.NoErr(err)              // expected an error
-		is.Equal(oldExpected, res) // expected the same result
+		require.NoError(t, err)
+		require.Equal(t, oldExpected, res)
 	})
 
 	// here we flush the cache and verify that the result is the one
@@ -58,24 +55,22 @@ func TestCachedClient(t *testing.T) {
 	t.Run("flush cache", func(t *testing.T) {
 		cache.Flush()
 		res, err := cli.ExpireTime(ctx, domain, host)
-		is := is.New(t)
-		is.NoErr(err)           // expected an error
-		is.Equal(expected, res) // expected the same result
+		require.NoError(t, err)
+		require.Equal(t, expected, res)
 	})
 
 	t.Run("do not cache errors", func(t *testing.T) {
 		cache.Flush()
-		is := is.New(t)
 
 		cli := NewCachedClient(errTestClient{}, cache)
 		_, err := cli.ExpireTime(ctx, domain, host)
-		is.True(err != nil) // expected an error
+		require.Error(t, err)
 
 		_, err = cli.ExpireTime(ctx, domain, host)
-		is.True(err != nil) // expected an error
+		require.Error(t, err)
 
 		cached, got := cache.Get(domain)
-		is.True(cached == nil) // expected a nil result
-		is.Equal(got, false)   // expect it not to get from cache
+		require.Nil(t, cached)
+		require.False(t, got)
 	})
 }

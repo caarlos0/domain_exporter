@@ -6,7 +6,7 @@ import (
 	"testing"
 	"time"
 
-	"github.com/matryer/is"
+	"github.com/stretchr/testify/require"
 )
 
 func TestWhoisParsing(t *testing.T) {
@@ -62,7 +62,6 @@ func TestWhoisParsing(t *testing.T) {
 	} {
 		t.Run(tt.domain, func(t *testing.T) {
 			t.Parallel()
-			is := is.New(t)
 
 			ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
 			t.Cleanup(cancel)
@@ -78,15 +77,14 @@ func TestWhoisParsing(t *testing.T) {
 				}
 			}
 			if tt.err == "" {
-				is.NoErr(err) // expected no errors
+				require.NoError(t, err)
 				if tt.expired {
-					is.True(time.Since(expiry).Hours() > 0) // domain must be expired
+					require.Greater(t, time.Since(expiry).Hours(), 0.0)
 				} else {
-					is.True(time.Since(expiry).Hours() < 0) // domain must not be expired
+					require.Less(t, time.Since(expiry).Hours(), 0.0)
 				}
 			} else {
-				is.True(err != nil)                            // expected an error
-				is.True(strings.Contains(err.Error(), tt.err)) // expected error to contain message
+				require.ErrorContains(t, err, tt.err)
 				t.Log(err)
 			}
 		})

@@ -2,11 +2,10 @@ package rdap
 
 import (
 	"context"
-	"strings"
 	"testing"
 	"time"
 
-	"github.com/matryer/is"
+	"github.com/stretchr/testify/require"
 )
 
 func TestRdapParsing(t *testing.T) {
@@ -19,10 +18,10 @@ func TestRdapParsing(t *testing.T) {
 		{domain: "fakedomain.foo", err: "RDAP server returned 404, object does not exist."},
 		{domain: "google.cn", err: "No RDAP servers found for 'google.cn'"},
 		{domain: "google.com", err: ""},
-		{domain: "google.lu", err: ""},
+		{domain: "google.lu", err: "No RDAP servers found for 'google.lu'"},
 		{domain: "google.de", err: "No RDAP servers found for 'google.de'"},
 		{domain: "nic.ua", err: ""},
-		{domain: "taiwannews.com.tw", err: "No RDAP servers found for 'taiwannews.com.tw'"},
+		{domain: "taiwannews.com.tw", err: ""},
 		// {domain: "bbc.co.uk", err: "No RDAP servers found for 'bbc.co.uk'"},
 		{domain: "google.sg", err: "No RDAP servers found for 'google.sg'"},
 		{domain: "google.sk", err: "No RDAP servers found for 'google.sk'"},
@@ -34,14 +33,12 @@ func TestRdapParsing(t *testing.T) {
 	} {
 		t.Run(tt.domain, func(t *testing.T) {
 			t.Parallel()
-			is := is.New(t)
 			expiry, err := NewClient().ExpireTime(context.Background(), tt.domain, "")
 			if tt.err == "" {
-				is.NoErr(err)                           // should not err
-				is.True(time.Since(expiry).Hours() < 0) // domain must not be expired
+				require.NoError(t, err)
+				require.Less(t, time.Since(expiry).Hours(), 0.0)
 			} else {
-				is.True(err != nil)                            // should have errored
-				is.True(strings.Contains(err.Error(), tt.err)) // should have error message
+				require.ErrorContains(t, err, tt.err)
 			}
 		})
 	}

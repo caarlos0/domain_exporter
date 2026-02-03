@@ -19,6 +19,7 @@ func TestRdapParsing(t *testing.T) {
 		{domain: "fakedomain.foo", err: "RDAP server returned 404, object does not exist."},
 		{domain: "google.cn", err: "No RDAP servers found for 'google.cn'"},
 		{domain: "google.com", err: ""},
+		{domain: "google.lu", err: ""},
 		{domain: "google.de", err: "No RDAP servers found for 'google.de'"},
 		{domain: "nic.ua", err: ""},
 		{domain: "taiwannews.com.tw", err: "No RDAP servers found for 'taiwannews.com.tw'"},

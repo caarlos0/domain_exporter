@@ -82,6 +82,7 @@ var (
 		"Record expires on",
 		"Exp date",
 		"Domain expired\\.*:",
+		"registered",
 	}, "|") + `)\]?:?\s?(.*)`)
 	registrarRE = regexp.MustCompile(`(?i)Registrar WHOIS Server: (.*)`)
 )

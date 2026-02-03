@@ -11,7 +11,7 @@ import (
 type vnAdapter struct{}
 
 func (a *vnAdapter) Prepare(req *whois.Request) error {
-	req.URL = generateVnWhoisRequestUrl(req.Query)
+	req.URL = generateVnWhoisRequestURL(req.Query)
 	// Override request body to avoid any conflict.
 	req.Body = nil
 
@@ -31,7 +31,7 @@ func init() {
 
 // Generate URL for .vn whois request.
 // Query sent to whois.net.vn should go to `/checkdomain.php` route with `act` & `domain` parameters.
-func generateVnWhoisRequestUrl(query string) string {
+func generateVnWhoisRequestURL(query string) string {
 	whoisEndpoint := "https://whois.net.vn/checkdomain.php?"
 
 	whoisQueryParams := url.Values{}

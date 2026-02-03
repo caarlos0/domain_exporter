@@ -12,7 +12,7 @@ import (
 type phAdapter struct{}
 
 func (a *phAdapter) Prepare(req *whois.Request) error {
-	req.URL = generatePhWhoisRequestUrl(req.Query)
+	req.URL = generatePhWhoisRequestURL(req.Query)
 	// Override request body to avoid any conflict.
 	req.Body = nil
 
@@ -32,7 +32,7 @@ func init() {
 
 // Generate URL for .ph whois request.
 // Query sent to whois.dot.ph should go to `/` route with `search` parameter.
-func generatePhWhoisRequestUrl(query string) string {
+func generatePhWhoisRequestURL(query string) string {
 	whoisEndpoint := "https://whois.dot.ph/?"
 
 	whoisQueryParams := url.Values{}

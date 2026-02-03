@@ -60,7 +60,6 @@ func TestWhoisParsing(t *testing.T) {
 		{domain: "google.cl", host: "", err: ""},
 		{domain: "google.ru", host: "", err: ""},
 	} {
-		tt := tt
 		t.Run(tt.domain, func(t *testing.T) {
 			t.Parallel()
 			is := is.New(t)

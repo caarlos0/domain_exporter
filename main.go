@@ -72,13 +72,11 @@ func main() {
 	cachedClient := client.NewCachedClient(cli, cache)
 
 	if len(cfg.Domains) != 0 {
-		wg.Add(1)
-		go func() {
-			defer wg.Done()
+		wg.Go(func() {
 			fresh := refresher.New(*interval, cachedClient, *timeout*time.Duration(len(cfg.Domains)), cfg.Domains...)
 			defer fresh.Stop()
 			fresh.Run(ctx)
-		}()
+		})
 
 		domainCollector := collector.NewDomainCollector(cachedClient, *timeout*time.Duration(len(cfg.Domains)), cfg.Domains...)
 		prometheus.DefaultRegisterer.MustRegister(domainCollector)
@@ -115,10 +113,7 @@ func runServerWithGracefullyShutdown(wg *sync.WaitGroup) error {
 
 	server := &http.Server{Addr: *bind}
 
-	wg.Add(1)
-	go func() {
-		defer wg.Done()
-
+	wg.Go(func() {
 		sig := <-signalChan
 
 		log.Warn().Msgf("got %s signal. Shutdown", sig)
@@ -128,7 +123,7 @@ func runServerWithGracefullyShutdown(wg *sync.WaitGroup) error {
 		if err := server.Shutdown(ctx); err != nil {
 			log.Error().Err(err).Msg("failed to shutdown http server")
 		}
-	}()
+	})
 
 	log.Info().Msgf("listening on %s", *bind)
 	if err := server.ListenAndServe(); err != nil && err != http.ErrServerClosed {

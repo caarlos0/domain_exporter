@@ -32,7 +32,6 @@ func TestRdapParsing(t *testing.T) {
 		{domain: "google.kr", err: "No RDAP servers found for 'google.kr'"},
 		{domain: "google.host", err: ""},
 	} {
-		tt := tt
 		t.Run(tt.domain, func(t *testing.T) {
 			t.Parallel()
 			is := is.New(t)

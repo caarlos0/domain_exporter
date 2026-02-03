@@ -28,6 +28,7 @@ var (
 		time.RFC3339Nano,
 		"2006-01-02T15:04:05-0700",    // some .com
 		"20060102",                    // .com.br
+		"20060102150405",              // .ua
 		"2006-01-02",                  // .lt
 		"2006-01-02 15:04:05-07",      // .ua
 		"2006-01-02 15:04:05",         // .ch
@@ -58,6 +59,7 @@ var (
 		"2006.01.02",                  // .ru
 		"2006-01-02 15:04:05 CLST",    // .cl
 		"2006-01-02 15:04:05 CLT",     // .cl
+		"2006-01-02 15:04:05",         // .hk
 	}
 
 	// nolint: lll
@@ -82,6 +84,7 @@ var (
 		"Record expires on",
 		"Exp date",
 		"Domain expired\\.*:",
+		"OK-UNTIL",
 		"registered",
 	}, "|") + `)\]?:?\s?(.*)`)
 	registrarRE = regexp.MustCompile(`(?i)Registrar WHOIS Server: (.*)`)

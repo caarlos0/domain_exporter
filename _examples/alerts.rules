@@ -1,5 +1,11 @@
 ALERT DomainExpiringLessThen30Days
-  IF domain_expiry_days != -1 AND domain_expiry_days < 30 AND domain_expiry_days > 5
+  IF (
+       min_over_time(domain_expiry_days[1h]) > 5
+       AND
+       max_over_time(domain_expiry_days[1h]) < 30
+     )
+     UNLESS
+     absent_over_time(domain_expiry_days[1h])
   FOR 1h
   LABELS {
     severity = "warning",
@@ -10,7 +16,9 @@ ALERT DomainExpiringLessThen30Days
   }
 
 ALERT DomainExpiringLessThen5Days
-  IF domain_expiry_days != -1 AND domain_expiry_days <= 5
+  IF max_over_time(domain_expiry_days[1h]) <= 5
+     UNLESS
+     absent_over_time(domain_expiry_days[1h])
   FOR 1h
   LABELS {
     severity = "page",

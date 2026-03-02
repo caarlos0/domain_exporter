@@ -2,7 +2,14 @@ groups:
 - name: domain
   rules:
   - alert: DomainExpiringLessThen30Days
-    expr: domain_expiry_days != -1 AND domain_expiry_days < 30 AND domain_expiry_days > 5
+    expr: >
+      (
+        min_over_time(domain_expiry_days[1h]) > 5
+        and
+        max_over_time(domain_expiry_days[1h]) < 30
+      )
+      unless
+      absent_over_time(domain_expiry_days[1h])
     for: 1h
     labels:
       severity: warning
@@ -11,7 +18,10 @@ groups:
       summary: '{{ $labels.domain }}: domain is expiring'
 
   - alert: DomainExpiringLessThen5Days
-    expr: domain_expiry_days != -1 AND domain_expiry_days <= 5
+    expr: >
+      max_over_time(domain_expiry_days[1h]) <= 5
+      unless
+      absent_over_time(domain_expiry_days[1h])
     for: 1h
     labels:
       severity: page

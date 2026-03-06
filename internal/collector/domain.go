@@ -63,15 +63,24 @@ func (c *domainCollector) Describe(ch chan<- *prometheus.Desc) {
 func (c *domainCollector) Collect(ch chan<- prometheus.Metric) {
 	c.mutex.Lock()
 	defer c.mutex.Unlock()
-
 	ctx, cancel := context.WithTimeout(context.Background(), c.timeout)
 	defer cancel()
-
 	for _, domain := range c.domains {
 		start := time.Now()
-		date, err := c.client.ExpireTime(ctx, domain.Name, domain.Host)
-		if err != nil {
-			log.Error().Err(err).Msgf("failed to probe %s", domain)
+
+		var date time.Time
+		var err error
+
+		if domain.ExpiryDate != "" {
+			date, err = time.Parse("2006-01-02", domain.ExpiryDate)
+			if err != nil {
+				log.Error().Err(err).Msgf("failed to parse static expiry_date for %s", domain.Name)
+			}
+		} else {
+			date, err = c.client.ExpireTime(ctx, domain.Name, domain.Host)
+			if err != nil {
+				log.Error().Err(err).Msgf("failed to probe %s", domain)
+			}
 		}
 
 		success := err == nil
@@ -102,3 +111,4 @@ func boolToFloat(b bool) float64 {
 	}
 	return 0.0
 }
+

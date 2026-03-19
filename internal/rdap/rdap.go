@@ -26,27 +26,27 @@ var (
 		time.RFC1123,
 		time.RFC1123Z,
 		time.RFC3339Nano,
-		"20060102",                       // .com.br
-		"2006-01-02",                     // .lt
-		"2006-01-02 15:04:05-07",         // .ua
-		"2006-01-02 15:04:05",            // .ch
-		"2006-01-02 15:04:05 (GMT-7:00)", // .kz
-		"2006-01-02 15:04:05 Z07:00",     // normalized .kz
-		"2006-01-02T15:04:05Z",           // .name
-		"2006-01-02T15:04:05.0Z",         // .host
-		"January  2 2006",                // .is
-		"02.01.2006",                     // .cz
-		"02/01/2006",                     // .fr
-		"02-January-2006",                // .ie
-		"2006.01.02 15:04:05",            // .pl
-		"02-Jan-2006",                    // .co.uk
-		"02-Jan-2006 15:04:05",           // .sg
-		"2006-01-02T15:04:05Z",           // .co
-		"2006/01/02",                     // .ca
-		"2006-01-02 (YYYY-MM-DD)",        // .tw
-		"(dd/mm/yyyy): 02/01/2006",       // .pt
-		"02-Jan-2006 15:04:05 UTC",       // .id, .co.id
-		": 2006. 01. 02.",                // .kr
+		"20060102",                 // .com.br
+		"2006-01-02",               // .lt
+		"2006-01-02 15:04:05-07",   // .ua
+		"2006-01-02 15:04:05",      // .ch
+                "2006-01-02 15:04:05 (GMT-7:00)", // .kz
+                "2006-01-02 15:04:05 Z07:00", // normalized .kz
+		"2006-01-02T15:04:05Z",     // .name
+		"2006-01-02T15:04:05.0Z",   // .host
+		"January  2 2006",          // .is
+		"02.01.2006",               // .cz
+		"02/01/2006",               // .fr
+		"02-January-2006",          // .ie
+		"2006.01.02 15:04:05",      // .pl
+		"02-Jan-2006",              // .co.uk
+		"02-Jan-2006 15:04:05",     // .sg
+		"2006-01-02T15:04:05Z",     // .co
+		"2006/01/02",               // .ca
+		"2006-01-02 (YYYY-MM-DD)",  // .tw
+		"(dd/mm/yyyy): 02/01/2006", // .pt
+		"02-Jan-2006 15:04:05 UTC", // .id, .co.id
+		": 2006. 01. 02.",          // .kr
 	}
 )
 
@@ -141,10 +141,10 @@ func (rdapClient) ExpireTime(ctx context.Context, domain string, host string) (t
 		return time.Now(), fmt.Errorf("failed to cast rdap domain object: %w", err)
 	}
 
-	for _, event := range body.Events {
-		if event.Action == "expiration" {
-			return parseDate(event.Date)
-		}
+for _, event := range body.Events {
+	if event.Action == "expiration" {
+		return parseDate(event.Date)
 	}
+}
 	return time.Now(), fmt.Errorf("no expiration event for domain: %s ", domain)
 }

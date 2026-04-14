@@ -63,7 +63,7 @@ var (
 	}
 
 	// nolint: lll
-	expiryRE = regexp.MustCompile(`(?i)(` + strings.Join([]string{
+	expiryRE = regexp.MustCompile(`(?im)^\s*(` + strings.Join([]string{
 		"Registrar Registration Expiration Date",
 		"expire-date",
 		"Valid Until",

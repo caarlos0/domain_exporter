@@ -3,12 +3,29 @@ package rdap
 import (
 	"context"
 	"fmt"
+	"net/url"
+	"strings"
 	"time"
 
 	"github.com/caarlos0/domain_exporter/internal/client"
 	"github.com/openrdap/rdap"
 	"github.com/rs/zerolog/log"
 )
+
+// rdapServerOverrides maps TLDs whose RDAP server isn't in IANA's bootstrap
+// (https://data.iana.org/rdap/dns.json) to a known RDAP endpoint. The
+// openrdap library only consults the IANA registry, so without an override
+// it returns "No RDAP servers found" for these TLDs even though the
+// registry operator publishes a working RDAP service.
+//
+// .io and other Identity Digital TLDs deprecated WHOIS port 43 on
+// 2025-08-04 and migrated to RDAP-only, but the IANA bootstrap entry
+// hasn't been updated to point at rdap.identitydigital.services.
+//
+// nolint: gochecknoglobals
+var rdapServerOverrides = map[string]string{
+	"io": "https://rdap.identitydigital.services/rdap/",
+}
 
 // nolint: gochecknoglobals
 var (
@@ -57,6 +74,14 @@ func (rdapClient) ExpireTime(ctx context.Context, domain string, host string) (t
 	req := &rdap.Request{
 		Type:  rdap.DomainRequest,
 		Query: domain,
+	}
+	if i := strings.LastIndex(domain, "."); i >= 0 {
+		if override, ok := rdapServerOverrides[domain[i+1:]]; ok {
+			if srv, err := url.Parse(override); err == nil {
+				req.Server = srv
+				log.Debug().Msgf("using rdap server override %s for %s", override, domain)
+			}
+		}
 	}
 	req = req.WithContext(ctx)
 

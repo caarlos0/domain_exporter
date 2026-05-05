@@ -1,11 +1,15 @@
-FROM golang as builder
+FROM golang:1.26-alpine AS builder
 WORKDIR /code
+RUN apk add --no-cache ca-certificates git
 COPY go.mod go.sum /code/
 RUN go mod download
 COPY  . .
-RUN go build -o /domain_exporter main.go
+ARG TARGETOS=linux
+ARG TARGETARCH=amd64
+RUN CGO_ENABLED=0 GOOS=${TARGETOS} GOARCH=${TARGETARCH} go build -trimpath -ldflags="-s -w" -o /domain_exporter ./main.go
 
-FROM gcr.io/distroless/base
+FROM alpine:3@sha256:25109184c71bdad752c8312a8623239686a9a2071e8825f20acb8f2198c3f659
+RUN apk upgrade --no-cache && apk add --no-cache ca-certificates
 EXPOSE 9222
 WORKDIR /
 COPY --from=builder /domain_exporter /usr/bin/domain_exporter

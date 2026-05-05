@@ -2,6 +2,19 @@
 
 Exports the expiration time of your domains as prometheus metrics.
 
+# How to check
+docker build -f Dockerfile.dev -t domain_exporter:kz-rdap-7 .
+docker run --rm --dns 1.1.1.1 --dns 8.8.8.8 -p 9222:9222 domain_exporter:kz-rdap-6 --debug
+
+domain=example.com
+curl -s "http://localhost:9222/probe?target=$domain" | grep -E 'domain_expiry_days|probe_';   done
+
+docker push lifeorient/domain_export:v0.7
+docker tag domain_exporter:kz-rdap-7 lifeorient/domain_export:v0.7
+
+# latest image
+docker pull lifeorient/domain_export:v0.7
+
 #### Environment variables
 
 - `DOMAIN_EXPORTER_URL_PREFIX` — use when HTTP endpoint served with a prefix,

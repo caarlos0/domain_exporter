@@ -14,7 +14,6 @@ import (
 	"github.com/alecthomas/kingpin/v2"
 	"github.com/caarlos0/domain_exporter/internal/client"
 	"github.com/caarlos0/domain_exporter/internal/collector"
-	"github.com/caarlos0/domain_exporter/internal/rdap"
 	"github.com/caarlos0/domain_exporter/internal/refresher"
 	"github.com/caarlos0/domain_exporter/internal/safeconfig"
 	"github.com/caarlos0/domain_exporter/internal/whois"
@@ -68,7 +67,7 @@ func main() {
 	defer cancel()
 
 	cache := cache.New(*interval, *interval)
-	cli := client.NewMultiClient(rdap.NewClient(), whois.NewClient())
+	cli := whois.NewClient()
 	cachedClient := client.NewCachedClient(cli, cache)
 
 	if len(cfg.Domains) != 0 {

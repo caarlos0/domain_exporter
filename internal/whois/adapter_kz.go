@@ -3,13 +3,16 @@ package whois
 import (
 	"fmt"
 	"regexp"
+	"strings"
 	"time"
-	
+
 	"github.com/domainr/whois"
 	"github.com/rs/zerolog/log"
 )
 
-// kzAdapter implements custom adapter for .kz domains
+var kzStatusRegex = regexp.MustCompile(`(?im)^Domain status\s*:\s*ok\b`)
+
+// kzAdapter implements custom adapter for .kz domains.
 type kzAdapter struct{}
 
 func (a *kzAdapter) Prepare(req *whois.Request) error {
@@ -22,24 +25,23 @@ func (a *kzAdapter) Text(res *whois.Response) ([]byte, error) {
 		return nil, err
 	}
 
-	// Look for domain status - if it contains "ok", the domain is active
-	statusRegex := regexp.MustCompile(`Domain status\s*:\s*ok`)
-	if statusRegex.Match(text) {
-		log.Debug().Msg("KZ domain is active based on status")
-		
-		// For active domains, use current date + 1 year as expiry
-		// KZ WHOIS doesn't provide explicit expiry dates
-		expiration := time.Now().AddDate(1, 0, 0)
-		
-		response := string(text)
-		response += fmt.Sprintf("\npaid-till: %s", expiration.Format("2006-01-02T15:04:05Z"))
-		return []byte(response), nil
+	return enrichKZWhoisResponse(text, time.Now), nil
+}
+
+func enrichKZWhoisResponse(text []byte, now func() time.Time) []byte {
+	response := string(text)
+	if strings.Contains(strings.ToLower(response), "paid-till:") {
+		return text
 	}
-	
-	// If domain is not active or status is not found, return original text
-	// This will likely cause the domain to be reported as expired, which is correct
-	log.Debug().Msg("KZ domain is not active or status not found")
-	return text, nil
+
+	if !kzStatusRegex.MatchString(response) {
+		log.Debug().Msg("KZ domain is not active or status not found")
+		return text
+	}
+
+	log.Debug().Msg("KZ domain is active based on status")
+	expiration := now().AddDate(1, 0, 0).UTC().Format(time.RFC3339)
+	return []byte(response + fmt.Sprintf("\npaid-till: %s", expiration))
 }
 
 func init() {
